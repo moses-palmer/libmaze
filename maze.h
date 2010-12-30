@@ -160,10 +160,54 @@ maze_initialize_randomized_prim(Maze *maze, MazeInitializeCallback callback,
  *     The y coordinate of the room.
  * @return the value of the room, or 0 if the room is invalid
  */
-#define maze_room_get(maze, x, y) \
-    (((x) >= 0 && (x) < (maze)->width && (y) >= 0 && (y) < (maze)->height) \
-        ? (maze)->data[(maze)->width * (y) + x] \
-        : 0)
+static inline unsigned char
+maze_room_get(Maze *maze, int x, int y)
+{
+    if (x >= 0 && x < maze->width && y >= 0 && y < maze->height) {
+        return maze->data[y * maze->width + x];
+    }
+
+    return 0;
+}
+
+/**
+ * Retrieves the room data.
+ *
+ * @param maze
+ *     The maze on which to operate.
+ * @param x
+ *     The x coordinate of the room.
+ * @param y
+ *     The y coordinate of the room.
+ * @return the room data, or 0 if the room is invalid
+ */
+#define maze_data_get(maze, x, y) \
+    (maze_room_get(maze, x, y) >> 4)
+
+/**
+ * Sets the data of a room.
+ *
+ * @param maze
+ *     The maze on which to operate.
+ * @param x
+ *     The x coordinate of the room.
+ * @param y
+ *     The y coordinate of the room.
+ * @param data
+ *     The room data to set.
+ * @return whether the data was set
+ */
+static inline int
+maze_data_set(Maze *maze, int x, int y, unsigned char data)
+{
+    if (x >= 0 && x < maze->width && y >= 0 && y < maze->height) {
+        maze->data[y * maze->width + x] =
+            (maze->data[y * maze->width + x] & MAZE_WALL_ANY) | (data << 4);
+        return 1;
+    }
+
+    return 0;
+}
 
 /**
  * Macros to determine whether walls are open.
@@ -210,40 +254,5 @@ maze_initialize_randomized_prim(Maze *maze, MazeInitializeCallback callback,
 #define maze_is_corner_dl_in(maze, x, y) (1 \
     && !maze_is_open_down(maze, x, y) \
     && !maze_is_open_left(maze, x, y))
-
-/**
- * Retrieves the room data.
- *
- * @param maze
- *     The maze on which to operate.
- * @param x
- *     The x coordinate of the room.
- * @param y
- *     The y coordinate of the room.
- * @return the room data, or 0 if the room is invalid
- */
-#define maze_data_get(maze, x, y) \
-    (maze_room_get(maze, x, y) >> 4)
-
-/**
- * Sets the data of a room.
- *
- * @param maze
- *     The maze on which to operate.
- * @param x
- *     The x coordinate of the room.
- * @param y
- *     The y coordinate of the room.
- * @param data
- *     The room data to set.
- */
-#define maze_data_set(maze, x, y, value) \
-    do { \
-        if ((x) >= 0 && (x) < (maze)->width \
-                && (y) >= 0 && (y) < (maze)->height) { \
-            (maze)->data[(y) * (maze)->width + x] = \
-                ((maze)->data[x * y] & MAZE_WALL_ANY) | (value) << 4; \
-        } \
-    } while (0)
 
 #endif
