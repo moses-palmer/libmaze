@@ -23,11 +23,10 @@ maze_free(Maze *maze)
 }
 
 int
-maze_door_open(Maze *maze, unsigned int x, unsigned int y,
-    unsigned char wall)
+maze_door_open(Maze *maze, int x, int y, unsigned char wall)
 {
     /* The room lies outside of the maze */
-    if (x >= maze->width || y >= maze->height) {
+    if (x < 0 || x >= maze->width || y < 0 || y >= maze->height) {
         return 0;
     }
 
@@ -40,11 +39,11 @@ maze_door_open(Maze *maze, unsigned int x, unsigned int y,
 }
 
 int
-maze_door_enter(Maze *maze, unsigned int *x, unsigned int *y,
-    unsigned char wall, int only_if_open)
+maze_door_enter(Maze *maze, int *x, int *y, unsigned char wall,
+    int only_if_open)
 {
     /* The room lies outside of the maze */
-    if (*x >= maze->width || *y >= maze->height) {
+    if (*x < 0 || *x >= maze->width || *y < 0 || *y >= maze->height) {
         return 0;
     }
 

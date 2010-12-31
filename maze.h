@@ -70,8 +70,7 @@ maze_free(Maze *maze);
  * @return whether the door was actually opened.
  */
 int
-maze_door_open(Maze *maze, unsigned int x, unsigned int y,
-    unsigned char wall);
+maze_door_open(Maze *maze, int x, int y, unsigned char wall);
 
 /**
  * Calculates the coordinates of the room that lies on the other side of wall.
@@ -92,8 +91,8 @@ maze_door_open(Maze *maze, unsigned int x, unsigned int y,
  * @return whether x or y were modified
  */
 int
-maze_door_enter(Maze *maze, unsigned int *x, unsigned int *y,
-    unsigned char wall, int only_if_open);
+maze_door_enter(Maze *maze, int *x, int *y, unsigned char wall,
+    int only_if_open);
 
 /**
  * The function signature of a maze initialisation callback function.
