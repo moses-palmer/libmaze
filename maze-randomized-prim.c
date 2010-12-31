@@ -99,11 +99,11 @@ wall_add_all_new(RandomizedPrimData **data, unsigned int x, unsigned int y,
     walls = 0
         | (x > 0
             ? MAZE_WALL_LEFT : 0)
-        | (y < height - 1
+        | (y > 0
             ? MAZE_WALL_UP : 0)
         | (x < width - 1
             ? MAZE_WALL_RIGHT : 0)
-        | (y > 0
+        | (y < height - 1
             ? MAZE_WALL_DOWN : 0);
 
     /* Remove any wall already present in the list */
@@ -144,7 +144,7 @@ maze_initialize_randomized_prim(Maze *maze, MazeInitializeCallback callback,
     maze_data_set(maze, start_x, start_y, 1);
 
     while ((wall = wall_pick(&walls)) != NULL) {
-        unsigned int x, y;
+        int x, y;
 
         x = wall->x;
         y = wall->y;
