@@ -39,10 +39,17 @@
 		<Unit filename="maze-randomized-prim.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="maze-render.h" />
 		<Unit filename="maze.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="maze.h" />
+		<Unit filename="render-gl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="render-print.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<envvars />
