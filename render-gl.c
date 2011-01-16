@@ -1,0 +1,154 @@
+#include <GL/gl.h>
+
+#include "maze-render.h"
+
+/**
+ * Draws a wall.
+ *
+ * The wall is rendered in the bottom part of the frame buffer.
+ *
+ * @param wall_width
+ *     The width of a wall.
+ * @param is_outer
+ *     Whether the wall is along the edge of the maze. If this is the case, an
+ *     outer wall is draw as well.
+ */
+static void
+draw_wall(double wall_width, int is_edge)
+{
+    /* The top */
+    glNormal3f(0.0,         0.0,        1.0);
+    glBegin(GL_QUADS);
+    glVertex3f(0.0,         wall_width, 1.0);
+    glVertex3f(0.0,         0.0,        1.0);
+    glVertex3f(1.0,         0.0,        1.0);
+    glVertex3f(1.0,         wall_width, 1.0);
+    glEnd();
+
+    /* The vertical part */
+    glNormal3f(0.0,         1.0,        0.0);
+    glBegin(GL_QUADS);
+    glVertex3f(0.0,         wall_width, 1.0);
+    glVertex3f(1.0,         wall_width, 1.0);
+    glVertex3f(1.0,         wall_width, 0.0);
+    glVertex3f(0.0,         wall_width, 0.0);
+    glEnd();
+
+    if (is_edge) {
+        glNormal3f(0.0,         -1.0,       0.0);
+        glBegin(GL_QUADS);
+        glVertex3f(0.0,         0.0,        1.0);
+        glVertex3f(0.0,         0.0,        0.0);
+        glVertex3f(1.0,         0.0,        0.0);
+        glVertex3f(1.0,         0.0,        1.0);
+        glEnd();
+    }
+}
+
+/**
+ * Draws a corner.
+ *
+ * The corner is rendered in the bottom left part of the frame buffer.
+ *
+ * @param wall_width
+ *     The width of a wall.
+ */
+static void
+draw_corner(double wall_width)
+{
+    /* The top */
+    glNormal3f(0.0,         0.0,       1.0);
+    glBegin(GL_QUADS);
+    glVertex3f(0.0,         wall_width, 1.0);
+    glVertex3f(0.0,         0.0,        1.0);
+    glVertex3f(wall_width,  0.0,        1.0);
+    glVertex3f(wall_width,  wall_width, 1.0);
+    glEnd();
+
+    /* The top vertical part */
+    glNormal3f(0.0,         1.0,        0.0);
+    glBegin(GL_QUADS);
+    glVertex3f(0.0,         wall_width, 1.0);
+    glVertex3f(wall_width,  wall_width, 1.0);
+    glVertex3f(wall_width,  wall_width, 0.0);
+    glVertex3f(0.0,         wall_width, 0.0);
+    glEnd();
+
+    /* The right vertical part */
+    glNormal3f(1.0,         0.0,        0.0);
+    glBegin(GL_QUADS);
+    glVertex3f(wall_width,  wall_width, 1.0);
+    glVertex3f(wall_width,  0.0,        1.0);
+    glVertex3f(wall_width,  0.0,        0.0);
+    glVertex3f(wall_width,  wall_width, 0.0);
+    glEnd();
+}
+
+#define HANDLE_WALL(corner, wall, is_edge) \
+    do { \
+        if (maze_is_corner_##corner##_out(maze, x, y)) { \
+            draw_corner(wall_width); \
+        } \
+        else if (!maze_is_open_##wall(maze, x, y)) { \
+            draw_wall(wall_width, is_edge); \
+        } \
+    } while (0)
+
+#define NEXT_WALL() \
+    glTranslatef(0.5, 0.5, 0.0); \
+    glRotatef(90.0, 0.0, 0.0, -1.0); \
+    glTranslatef(-0.5, -0.5, 0.0)
+
+static void
+draw_room(Maze *maze, unsigned int x, unsigned int y, double wall_width,
+    int draw_floor)
+{
+    HANDLE_WALL(dl, down, y == maze->height - 1);
+    NEXT_WALL();
+
+    HANDLE_WALL(ul, left, x == 0);
+    NEXT_WALL();
+
+    HANDLE_WALL(ur, up, y == 0);
+    NEXT_WALL();
+
+    HANDLE_WALL(dr, right, x == maze->width - 1);
+    NEXT_WALL();
+
+    if (!draw_floor) {
+        return;
+    }
+
+    /* The floor */
+    glNormal3f(0.0,         0.0,        1.0);
+    glBegin(GL_QUADS);
+    glVertex3f(0.0,         1.0,        1.0);
+    glVertex3f(0.0,         0.0,        1.0);
+    glVertex3f(1.0,         0.0,        1.0);
+    glVertex3f(1.0,         1.0,        1.0);
+    glEnd();
+}
+
+void
+maze_render_gl(Maze *maze, double wall_width, int draw_floor,
+    unsigned int cx, unsigned int cy, unsigned int d)
+{
+    unsigned int sx, sy, ex, ey;
+    int x, y;
+
+    /* Initialise bounds */
+    sx = (d > cx) ? 0 : cx - d;
+    sy = (d > cy) ? 0 : cy - d;
+    ex = (cx + d >= maze->width) ? maze->width - 1 : cx + d;
+    ey = (cx + d >= maze->height) ? maze->height - 1 : cy + d;
+
+    /* Draw every requested room */
+    for (y = sy; y <= ey; y++) {
+        for (x = sx; x <= ex; x++) {
+            glPushMatrix();
+            glTranslatef(x, maze->height - y, 0.0);
+            draw_room(maze, x, y, wall_width, draw_floor);
+            glPopMatrix();
+        }
+    }
+}
