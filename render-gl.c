@@ -11,36 +11,81 @@
  *     The width of a wall.
  * @param is_outer
  *     Whether the wall is along the edge of the maze. If this is the case, an
- *     outer wall is draw as well.
+ *     outer wall is drawn as well.
  */
 static void
 draw_wall(double wall_width, int is_edge)
 {
     /* The top */
-    glNormal3f(0.0,         0.0,        1.0);
+    glNormal3f(
+        0.0,
+        0.0,
+        1.0);
     glBegin(GL_QUADS);
-    glVertex3f(0.0,         wall_width, 1.0);
-    glVertex3f(0.0,         0.0,        1.0);
-    glVertex3f(1.0,         0.0,        1.0);
-    glVertex3f(1.0,         wall_width, 1.0);
+    glVertex3f(
+        0.0,
+        wall_width,
+        1.0);
+    glVertex3f(
+        0.0,
+        0.0,
+        1.0);
+    glVertex3f(
+        1.0,
+        0.0,
+        1.0);
+    glVertex3f(
+        1.0,
+        wall_width,
+        1.0);
     glEnd();
 
     /* The vertical part */
-    glNormal3f(0.0,         1.0,        0.0);
+    glNormal3f(
+        0.0,
+        1.0,
+        0.0);
     glBegin(GL_QUADS);
-    glVertex3f(0.0,         wall_width, 1.0);
-    glVertex3f(1.0,         wall_width, 1.0);
-    glVertex3f(1.0,         wall_width, 0.0);
-    glVertex3f(0.0,         wall_width, 0.0);
+    glVertex3f(
+        0.0,
+        wall_width,
+        1.0);
+    glVertex3f(
+        1.0,
+        wall_width,
+        1.0);
+    glVertex3f(
+        1.0,
+        wall_width,
+        0.0);
+    glVertex3f(
+        0.0,
+        wall_width,
+        0.0);
     glEnd();
 
     if (is_edge) {
-        glNormal3f(0.0,         -1.0,       0.0);
+        glNormal3f(
+            0.0,
+            -1.0,
+            0.0);
         glBegin(GL_QUADS);
-        glVertex3f(0.0,         0.0,        1.0);
-        glVertex3f(0.0,         0.0,        0.0);
-        glVertex3f(1.0,         0.0,        0.0);
-        glVertex3f(1.0,         0.0,        1.0);
+        glVertex3f(
+            0.0,
+            0.0,
+            1.0);
+        glVertex3f(
+            0.0,
+            0.0,
+            0.0);
+        glVertex3f(
+            1.0,
+            0.0,
+            0.0);
+        glVertex3f(
+            1.0,
+            0.0,
+            1.0);
         glEnd();
     }
 }
@@ -57,30 +102,75 @@ static void
 draw_corner(double wall_width)
 {
     /* The top */
-    glNormal3f(0.0,         0.0,       1.0);
+    glNormal3f(
+        0.0,
+        0.0,
+        1.0);
     glBegin(GL_QUADS);
-    glVertex3f(0.0,         wall_width, 1.0);
-    glVertex3f(0.0,         0.0,        1.0);
-    glVertex3f(wall_width,  0.0,        1.0);
-    glVertex3f(wall_width,  wall_width, 1.0);
+    glVertex3f(
+        0.0,
+        wall_width,
+        1.0);
+    glVertex3f(
+        0.0,
+        0.0,
+        1.0);
+    glVertex3f(
+        wall_width,
+        0.0,
+        1.0);
+    glVertex3f(
+        wall_width,
+        wall_width,
+        1.0);
     glEnd();
 
     /* The top vertical part */
-    glNormal3f(0.0,         1.0,        0.0);
+    glNormal3f(
+        0.0,
+        1.0,
+        0.0);
     glBegin(GL_QUADS);
-    glVertex3f(0.0,         wall_width, 1.0);
-    glVertex3f(wall_width,  wall_width, 1.0);
-    glVertex3f(wall_width,  wall_width, 0.0);
-    glVertex3f(0.0,         wall_width, 0.0);
+    glVertex3f(
+        0.0,
+        wall_width,
+        1.0);
+    glVertex3f(
+        wall_width,
+        wall_width,
+        1.0);
+    glVertex3f(
+        wall_width,
+        wall_width,
+        0.0);
+    glVertex3f(
+        0.0,
+        wall_width,
+        0.0);
     glEnd();
 
     /* The right vertical part */
-    glNormal3f(1.0,         0.0,        0.0);
+    glNormal3f(
+        1.0,
+        0.0,
+        0.0);
     glBegin(GL_QUADS);
-    glVertex3f(wall_width,  wall_width, 1.0);
-    glVertex3f(wall_width,  0.0,        1.0);
-    glVertex3f(wall_width,  0.0,        0.0);
-    glVertex3f(wall_width,  wall_width, 0.0);
+    glVertex3f(
+        wall_width,
+        wall_width,
+        1.0);
+    glVertex3f(
+        wall_width,
+        0.0,
+        1.0);
+    glVertex3f(
+        wall_width,
+        0.0,
+        0.0);
+    glVertex3f(
+        wall_width,
+        wall_width,
+        0.0);
     glEnd();
 }
 
@@ -120,12 +210,27 @@ draw_room(Maze *maze, unsigned int x, unsigned int y, double wall_width,
     }
 
     /* The floor */
-    glNormal3f(0.0,         0.0,        1.0);
+    glNormal3f(
+        0.0,
+        0.0,
+        1.0);
     glBegin(GL_QUADS);
-    glVertex3f(0.0,         1.0,        1.0);
-    glVertex3f(0.0,         0.0,        1.0);
-    glVertex3f(1.0,         0.0,        1.0);
-    glVertex3f(1.0,         1.0,        1.0);
+    glVertex3f(
+        0.0,
+        1.0,
+        0.0);
+    glVertex3f(
+        0.0,
+        0.0,
+        0.0);
+    glVertex3f(
+        1.0,
+        0.0,
+        0.0);
+    glVertex3f(
+        1.0,
+        1.0,
+        0.0);
     glEnd();
 }
 
