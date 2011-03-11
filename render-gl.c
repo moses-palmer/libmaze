@@ -14,7 +14,7 @@
  *     outer wall is drawn as well.
  */
 static void
-draw_wall(double wall_width, int is_edge)
+draw_wall(double wall_width, double slope_width, int is_edge)
 {
     /* The top */
     glNormal3f(
@@ -41,6 +41,7 @@ draw_wall(double wall_width, int is_edge)
     glEnd();
 
     /* The vertical part */
+    /* TODO: Correct normal */
     glNormal3f(
         0.0,
         1.0,
@@ -56,11 +57,11 @@ draw_wall(double wall_width, int is_edge)
         1.0);
     glVertex3f(
         1.0,
-        wall_width,
+        wall_width + slope_width,
         0.0);
     glVertex3f(
         0.0,
-        wall_width,
+        wall_width + slope_width,
         0.0);
     glEnd();
 
@@ -99,7 +100,7 @@ draw_wall(double wall_width, int is_edge)
  *     The width of a wall.
  */
 static void
-draw_corner(double wall_width)
+draw_corner(double wall_width, double slope_width)
 {
     /* The top */
     glNormal3f(
@@ -126,6 +127,7 @@ draw_corner(double wall_width)
     glEnd();
 
     /* The top vertical part */
+    /* TODO: Correct normal */
     glNormal3f(
         0.0,
         1.0,
@@ -140,16 +142,17 @@ draw_corner(double wall_width)
         wall_width,
         1.0);
     glVertex3f(
-        wall_width,
-        wall_width,
+        wall_width + slope_width,
+        wall_width + slope_width,
         0.0);
     glVertex3f(
         0.0,
-        wall_width,
+        wall_width + slope_width,
         0.0);
     glEnd();
 
     /* The right vertical part */
+    /* TODO: Correct normal */
     glNormal3f(
         1.0,
         0.0,
@@ -164,12 +167,12 @@ draw_corner(double wall_width)
         0.0,
         1.0);
     glVertex3f(
-        wall_width,
+        wall_width + slope_width,
         0.0,
         0.0);
     glVertex3f(
-        wall_width,
-        wall_width,
+        wall_width + slope_width,
+        wall_width + slope_width,
         0.0);
     glEnd();
 }
@@ -177,10 +180,10 @@ draw_corner(double wall_width)
 #define HANDLE_WALL(corner, wall, is_edge) \
     do { \
         if (maze_is_corner_##corner##_out(maze, x, y)) { \
-            draw_corner(wall_width); \
+            draw_corner(wall_width, slope_width); \
         } \
         else if (!maze_is_open_##wall(maze, x, y)) { \
-            draw_wall(wall_width, is_edge); \
+            draw_wall(wall_width, slope_width, is_edge); \
         } \
     } while (0)
 
@@ -191,7 +194,7 @@ draw_corner(double wall_width)
 
 static void
 draw_room(Maze *maze, unsigned int x, unsigned int y, double wall_width,
-    int draw_floor)
+    double slope_width, int draw_floor)
 {
     HANDLE_WALL(dl, down, y == maze->height - 1);
     NEXT_WALL();
@@ -235,8 +238,8 @@ draw_room(Maze *maze, unsigned int x, unsigned int y, double wall_width,
 }
 
 void
-maze_render_gl(Maze *maze, double wall_width, int draw_floor,
-    unsigned int cx, unsigned int cy, unsigned int d)
+maze_render_gl(Maze *maze, double wall_width, double slope_width,
+    int draw_floor, unsigned int cx, unsigned int cy, unsigned int d)
 {
     unsigned int sx, sy, ex, ey;
     int x, y;
@@ -252,7 +255,7 @@ maze_render_gl(Maze *maze, double wall_width, int draw_floor,
         for (x = sx; x <= ex; x++) {
             glPushMatrix();
             glTranslatef(x, maze->height - y, 0.0);
-            draw_room(maze, x, y, wall_width, draw_floor);
+            draw_room(maze, x, y, wall_width, slope_width, draw_floor);
             glPopMatrix();
         }
     }

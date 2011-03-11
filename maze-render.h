@@ -32,6 +32,8 @@ maze_render_print(Maze *maze, unsigned int room_width, unsigned int room_height,
  * @param wall_width
  *     The width of a wall. This is a value less than 1.0 and greater than 0.0
  *     that is interpreted as the portion of a half room that is wall.
+ * @param slope_width
+ *     The width of the slope from the top to the floor.
  * @param draw_floor
  *     Whether to draw the floor.
  * @param cx
@@ -43,7 +45,7 @@ maze_render_print(Maze *maze, unsigned int room_width, unsigned int room_height,
  *     rooms that are rendered is (2 * d) * (2 * d).
  */
 void
-maze_render_gl(Maze *maze, double wall_width, int draw_floor,
-    unsigned int cx, unsigned int cy, unsigned int d);
+maze_render_gl(Maze *maze, double wall_width, double slope_width,
+    int draw_floor, unsigned int cx, unsigned int cy, unsigned int d);
 
 #endif
