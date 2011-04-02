@@ -85,7 +85,7 @@ maze_door_open(Maze *maze, int x, int y, unsigned char wall);
  *     The y coordinate of the room. This parameter is overwritten.
  * @param wall
  *     The wall to enter.
- * @param only_is_open
+ * @param only_if_open
  *     Whether to only enter walls that are open. If this parameter is non-zero,
  *     x and y will not be modified if wall is not an open wall in the room.
  * @return whether x or y were modified
