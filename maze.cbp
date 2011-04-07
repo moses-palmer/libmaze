@@ -36,18 +36,18 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="maze-randomized-prim.c">
+		<Unit filename="maze/maze-randomized-prim.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="maze-render.h" />
-		<Unit filename="maze.c">
+		<Unit filename="maze/maze-render.h" />
+		<Unit filename="maze/maze.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="maze.h" />
-		<Unit filename="render-gl.c">
+		<Unit filename="maze/maze.h" />
+		<Unit filename="maze/render-gl.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="render-print.c">
+		<Unit filename="maze/render-print.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>
