@@ -1,13 +1,16 @@
 #ifndef MAZE_H
 #define MAZE_H
 
+/**
+ * The bit masks used for the walls.
+ */
 enum {
     MAZE_WALL_LEFT  = 1 << 0,
     MAZE_WALL_UP    = 1 << 1,
     MAZE_WALL_RIGHT = 1 << 2,
     MAZE_WALL_DOWN  = 1 << 3,
-    MAZE_WALL_ANY   = (1 << 4) - 1,
-    MAZE_WALL_DATA  = 0xff & ~((1 << 4) - 1)
+
+    MAZE_WALL_ANY   = (1 << 4) - 1
 };
 
 /**
