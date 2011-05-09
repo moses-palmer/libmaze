@@ -141,7 +141,7 @@ maze_initialize_randomized_prim(Maze *maze, MazeInitializeCallback callback,
     wall_add_all_new(&walls, start_x, start_y, maze->width, maze->height);
 
     /* Mark the room as part of the maze */
-    maze_data_set(maze, start_x, start_y, 1);
+    maze_data_set(maze, start_x, start_y, (void*)1);
 
     while ((wall = wall_pick(&walls)) != NULL) {
         int x, y;

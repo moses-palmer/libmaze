@@ -1,17 +1,6 @@
 #ifndef MAZE_H
 #define MAZE_H
 
-typedef struct {
-    /* The width of the maze */
-    unsigned int width;
-
-    /* The height of the maze */
-    unsigned int height;
-
-    /* The actual maze data; its size is width * height */
-    unsigned char *data;
-} Maze;
-
 enum {
     MAZE_WALL_LEFT  = 1 << 0,
     MAZE_WALL_UP    = 1 << 1,
@@ -31,6 +20,36 @@ enum {
  */
 #define maze_wall_opposite(wall) \
     ((wall > MAZE_WALL_UP) ? (wall) >> 2 : (wall) << 2)
+
+
+/**
+ * A room.
+ *
+ * A maze is a matrix of rooms.
+ */
+typedef struct {
+    /** The bit mask corresponding to the walls; a wall is open if its bit is
+        set */
+    unsigned char walls;
+
+    /** The data of the room */
+    void *data;
+} Room;
+
+/**
+ * The structure of a maze instance.
+ */
+typedef struct {
+    /** The width of the maze */
+    unsigned int width;
+
+    /** The height of the maze */
+    unsigned int height;
+
+    /** The actual maze data; its size is width * height */
+    Room *data;
+} Maze;
+
 
 /**
  * Creates a maze of the specific dimensions.
@@ -109,7 +128,7 @@ maze_door_enter(Maze *maze, int *x, int *y, unsigned char wall,
  *     Data specific to the maze initialisation algorithm.
  * @return the data value that will be applied to the room
  */
-typedef unsigned char (*MazeInitializeCallback)(void *context, Maze *maze,
+typedef void* (*MazeInitializeCallback)(void *context, Maze *maze,
     unsigned int x, unsigned int y, void *initialize_data);
 
 
@@ -163,7 +182,7 @@ static inline unsigned char
 maze_room_get(Maze *maze, int x, int y)
 {
     if (x >= 0 && x < maze->width && y >= 0 && y < maze->height) {
-        return maze->data[y * maze->width + x];
+        return maze->data[y * maze->width + x].walls;
     }
 
     return 0;
@@ -180,8 +199,15 @@ maze_room_get(Maze *maze, int x, int y)
  *     The y coordinate of the room.
  * @return the room data, or 0 if the room is invalid
  */
-#define maze_data_get(maze, x, y) \
-    (maze_room_get(maze, x, y) >> 4)
+static inline void*
+maze_data_get(Maze *maze, int x, int y)
+{
+    if (x >= 0 && x < maze->width && y >= 0 && y < maze->height) {
+        return maze->data[y * maze->width + x].data;
+    }
+
+    return 0;
+}
 
 /**
  * Sets the data of a room.
@@ -197,11 +223,10 @@ maze_room_get(Maze *maze, int x, int y)
  * @return whether the data was set
  */
 static inline int
-maze_data_set(Maze *maze, int x, int y, unsigned char data)
+maze_data_set(Maze *maze, int x, int y, void *data)
 {
     if (x >= 0 && x < maze->width && y >= 0 && y < maze->height) {
-        maze->data[y * maze->width + x] =
-            (maze->data[y * maze->width + x] & MAZE_WALL_ANY) | (data << 4);
+        maze->data[y * maze->width + x].data = data;
         return 1;
     }
 

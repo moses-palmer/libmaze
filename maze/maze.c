@@ -6,12 +6,12 @@
 Maze*
 maze_create(unsigned int width, unsigned int height)
 {
-    Maze *result = malloc(sizeof(Maze) + width * height);
+    Maze *result = malloc(sizeof(Maze) + sizeof(Room) * width * height);
 
     result->width = width;
     result->height = height;
-    result->data = (unsigned char*)(result + 1);
-    memset(result->data, 0, width * height);
+    result->data = (Room*)(result + 1);
+    memset(result->data, 0, sizeof(Room) * width * height);
 
     return result;
 }
@@ -30,9 +30,9 @@ maze_door_open(Maze *maze, int x, int y, unsigned char wall)
         return 0;
     }
 
-    maze->data[y * maze->width + x] |= wall;
+    maze->data[y * maze->width + x].walls |= wall;
     if (maze_door_enter(maze, &x, &y, wall, 0)) {
-        maze->data[y * maze->width + x] |= maze_wall_opposite(wall);
+        maze->data[y * maze->width + x].walls |= maze_wall_opposite(wall);
     }
 
     return 1;
