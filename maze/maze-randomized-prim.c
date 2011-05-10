@@ -88,7 +88,7 @@ wall_pick(RandomizedPrimData **data)
  *     The height of the maze.
  */
 static inline void
-wall_add_all_new(RandomizedPrimData **data, unsigned int x, unsigned int y,
+wall_add_all_new(RandomizedPrimData **data, int x, int y,
     unsigned int width, unsigned int height)
 {
     unsigned int walls;
@@ -132,7 +132,7 @@ maze_initialize_randomized_prim(Maze *maze, MazeInitializeCallback callback,
     void *context)
 {
     RandomizedPrimData *walls, *wall;
-    unsigned int start_x, start_y;
+    int start_x, start_y;
 
     /* Start with a random room and add its walls */
     start_x = rand() % maze->width;

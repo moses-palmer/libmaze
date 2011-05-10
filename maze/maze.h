@@ -127,8 +127,8 @@ maze_door_enter(Maze *maze, int *x, int *y, unsigned char wall,
  *     Data specific to the maze initialisation algorithm.
  * @return the data value that will be applied to the room
  */
-typedef void* (*MazeInitializeCallback)(void *context, Maze *maze,
-    unsigned int x, unsigned int y, void *initialize_data);
+typedef void* (*MazeInitializeCallback)(void *context, Maze *maze, int x, int y,
+    void *initialize_data);
 
 
 /**
@@ -137,7 +137,7 @@ typedef void* (*MazeInitializeCallback)(void *context, Maze *maze,
 typedef struct RandomizedPrimData RandomizedPrimData;
 struct RandomizedPrimData {
     /** The coordinates of the room */
-    unsigned int x, y;
+    int x, y;
 
     /** One of the MAZE_WALL_* macros */
     unsigned char wall;
@@ -178,7 +178,7 @@ maze_initialize_randomized_prim(Maze *maze, MazeInitializeCallback callback,
 static int
 maze_contains(Maze *maze, int x, int y)
 {
-    return x >= 0 && x < maze->width && y >= 0 && y < maze->height;
+    return x >= 0 && x < (int)maze->width && y >= 0 && y < (int)maze->height;
 }
 
 /**
