@@ -85,10 +85,10 @@ maze_free(Maze *maze);
  *
  * @param maze
  *     The maze to manipulate.
- * @param x
- *     The x coordinate of the room.
- * @param y
- *     The y coordingate of the room.
+ * @param x, y
+ *     The coordinates of the room.
+ * @param wall
+ *     The wall to open.
  * @return whether the door was actually opened.
  */
 int
@@ -101,10 +101,8 @@ maze_door_open(Maze *maze, int x, int y, unsigned char wall);
  *
  * @param maze
  *     The maze.
- * @param x
- *     The x coordinate of the room. This parameter is overwritten.
- * @param y
- *     The y coordinate of the room. This parameter is overwritten.
+ * @param x, y
+ *     The coordinates of the room. These parameters are overwritten.
  * @param wall
  *     The wall to enter.
  * @param only_if_open
@@ -123,10 +121,8 @@ maze_door_enter(Maze *maze, int *x, int *y, unsigned char wall,
  *     The user specified context of the maze initialisation.
  * @param maze
  *     The maze that is being initialised.
- * @param x
- *     The x coordinate of the current room.
- * @param y
- *     The y coordinate of the current room.
+ * @param x, y
+ *     The coordinates of the room.
  * @param initialize_data
  *     Data specific to the maze initialisation algorithm.
  * @return the data value that will be applied to the room
@@ -140,13 +136,13 @@ typedef void* (*MazeInitializeCallback)(void *context, Maze *maze,
  */
 typedef struct RandomizedPrimData RandomizedPrimData;
 struct RandomizedPrimData {
-    /* The coordinates of the room */
+    /** The coordinates of the room */
     unsigned int x, y;
 
-    /* One of the MAZE_WALL_* macros */
+    /** One of the MAZE_WALL_* macros */
     unsigned char wall;
 
-    /* The next wall entry */
+    /** The next wall entry */
     RandomizedPrimData *next;
 };
 
@@ -171,14 +167,12 @@ maze_initialize_randomized_prim(Maze *maze, MazeInitializeCallback callback,
 
 
 /**
- * Retrieves the value of a room.
+ * Retrieves the wall value of a room.
  *
  * @param maze
  *     The maze on which to operate.
- * @param x
- *     The x coordinate of the room.
- * @param y
- *     The y coordinate of the room.
+ * @param x, y
+ *     The coordinates of the room.
  * @return the value of the room, or 0 if the room is invalid
  */
 static inline unsigned char
@@ -196,10 +190,8 @@ maze_room_get(Maze *maze, int x, int y)
  *
  * @param maze
  *     The maze on which to operate.
- * @param x
- *     The x coordinate of the room.
- * @param y
- *     The y coordinate of the room.
+ * @param x, y
+ *     The coordinates of the room.
  * @return the room data, or 0 if the room is invalid
  */
 static inline void*
@@ -217,10 +209,8 @@ maze_data_get(Maze *maze, int x, int y)
  *
  * @param maze
  *     The maze on which to operate.
- * @param x
- *     The x coordinate of the room.
- * @param y
- *     The y coordinate of the room.
+ * @param x, y
+ *     The coordinates of the room.
  * @param data
  *     The room data to set.
  * @return whether the data was set
