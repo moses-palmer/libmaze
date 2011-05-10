@@ -167,6 +167,21 @@ maze_initialize_randomized_prim(Maze *maze, MazeInitializeCallback callback,
 
 
 /**
+ * Determines whether a maze contains a room.
+ *
+ * @param maze
+ *     The maze on which to operate.
+ * @param x, y
+ *     The coordinates of the room.
+ * @return non-zero if the room is inside the maze and 0 otherwise
+ */
+static int
+maze_contains(Maze *maze, int x, int y)
+{
+    return x >= 0 && x < maze->width && y >= 0 && y < maze->height;
+}
+
+/**
  * Retrieves the wall value of a room.
  *
  * @param maze
@@ -178,7 +193,7 @@ maze_initialize_randomized_prim(Maze *maze, MazeInitializeCallback callback,
 static inline unsigned char
 maze_room_get(Maze *maze, int x, int y)
 {
-    if (x >= 0 && x < maze->width && y >= 0 && y < maze->height) {
+    if (maze_contains(maze, x, y)) {
         return maze->data[y * maze->width + x].walls;
     }
 
@@ -197,7 +212,7 @@ maze_room_get(Maze *maze, int x, int y)
 static inline void*
 maze_data_get(Maze *maze, int x, int y)
 {
-    if (x >= 0 && x < maze->width && y >= 0 && y < maze->height) {
+    if (maze_contains(maze, x, y)) {
         return maze->data[y * maze->width + x].data;
     }
 
@@ -218,7 +233,7 @@ maze_data_get(Maze *maze, int x, int y)
 static inline int
 maze_data_set(Maze *maze, int x, int y, void *data)
 {
-    if (x >= 0 && x < maze->width && y >= 0 && y < maze->height) {
+    if (maze_contains(maze, x, y)) {
         maze->data[y * maze->width + x].data = data;
         return 1;
     }
