@@ -239,20 +239,21 @@ draw_room(Maze *maze, unsigned int x, unsigned int y, double wall_width,
 
 void
 maze_render_gl(Maze *maze, double wall_width, double slope_width,
-    int draw_floor, unsigned int cx, unsigned int cy, unsigned int d)
+    int draw_floor, int cx, int cy, unsigned int d)
 {
-    unsigned int sx, sy, ex, ey;
     int x, y;
 
-    /* Initialise bounds */
-    sx = (d > cx) ? 0 : cx - d;
-    sy = (d > cy) ? 0 : cy - d;
-    ex = (cx + d >= maze->width) ? maze->width - 1 : cx + d;
-    ey = (cx + d >= maze->height) ? maze->height - 1 : cy + d;
-
     /* Draw every requested room */
-    for (y = sy; y <= ey; y++) {
-        for (x = sx; x <= ex; x++) {
+    for (y = cy - (int)d; y <= cy + (int)d; y++) {
+        if (y < 0 || y >= maze->height) {
+            continue;
+        }
+
+        for (x = cx - (int)d; x <= cx + (int)d; x++) {
+            if (x < 0 || x >= maze->width) {
+                continue;
+            }
+
             glPushMatrix();
             glTranslatef(x, maze->height - y, 0.0);
             draw_room(maze, x, y, wall_width, slope_width, draw_floor);

@@ -46,6 +46,6 @@ maze_render_print(Maze *maze, unsigned int room_width, unsigned int room_height,
  */
 void
 maze_render_gl(Maze *maze, double wall_width, double slope_width,
-    int draw_floor, unsigned int cx, unsigned int cy, unsigned int d);
+    int draw_floor, int cx, int cy, unsigned int d);
 
 #endif
