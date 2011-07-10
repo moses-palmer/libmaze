@@ -1,3 +1,5 @@
+#include <math.h>
+
 #include <GL/gl.h>
 
 #include "maze-render.h"
@@ -16,6 +18,8 @@
 static void
 draw_wall(double wall_width, double slope_width, int is_edge)
 {
+    GLfloat d;
+
     /* The top */
     glNormal3f(
         0.0,
@@ -41,11 +45,11 @@ draw_wall(double wall_width, double slope_width, int is_edge)
     glEnd();
 
     /* The vertical part */
-    /* TODO: Correct normal */
+    d = 1.0 / sqrt(1 + slope_width * slope_width);
     glNormal3f(
         0.0,
-        1.0,
-        0.0);
+        d,
+        slope_width * d);
     glBegin(GL_QUADS);
     glVertex3f(
         0.0,
@@ -102,6 +106,8 @@ draw_wall(double wall_width, double slope_width, int is_edge)
 static void
 draw_corner(double wall_width, double slope_width)
 {
+    GLfloat d;
+
     /* The top */
     glNormal3f(
         0.0,
@@ -127,11 +133,11 @@ draw_corner(double wall_width, double slope_width)
     glEnd();
 
     /* The top vertical part */
-    /* TODO: Correct normal */
+    d = 1.0 / sqrt(1 + slope_width * slope_width);
     glNormal3f(
         0.0,
-        1.0,
-        0.0);
+        d,
+        slope_width * d);
     glBegin(GL_QUADS);
     glVertex3f(
         0.0,
@@ -152,11 +158,11 @@ draw_corner(double wall_width, double slope_width)
     glEnd();
 
     /* The right vertical part */
-    /* TODO: Correct normal */
+    d = 1.0 / sqrt(1 + slope_width * slope_width);
     glNormal3f(
-        1.0,
+        d,
         0.0,
-        0.0);
+        slope_width * d);
     glBegin(GL_QUADS);
     glVertex3f(
         wall_width,
