@@ -175,7 +175,7 @@ maze_initialize_randomized_prim(Maze *maze, MazeInitializeCallback callback,
  *     The coordinates of the room.
  * @return non-zero if the room is inside the maze and 0 otherwise
  */
-static int
+static inline int
 maze_contains(Maze *maze, int x, int y)
 {
     return x >= 0 && x < (int)maze->width && y >= 0 && y < (int)maze->height;
