@@ -261,7 +261,7 @@ maze_render_gl(Maze *maze, double wall_width, double slope_width,
             }
 
             glPushMatrix();
-            glTranslatef(x, maze->height - y, 0.0);
+            glTranslatef(x, maze->height - 1 - y, 0.0);
             draw_room(maze, x, y, wall_width, slope_width, draw_floor);
             glPopMatrix();
         }
