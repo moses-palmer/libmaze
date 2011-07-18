@@ -14,6 +14,26 @@ enum {
 };
 
 /**
+ * The bit mask for the top left corner.
+ */
+#define MAZE_CORNER_UL (MAZE_WALL_UP | MAZE_WALL_LEFT)
+
+/**
+ * The bit mask for the top right corner.
+ */
+#define MAZE_CORNER_UR (MAZE_WALL_UP | MAZE_WALL_RIGHT)
+
+/**
+ * The bit mask for the bottom left corner.
+ */
+#define MAZE_CORNER_DL (MAZE_WALL_DOWN | MAZE_WALL_LEFT)
+
+/**
+ * The bit mask for the bottom right corner.
+ */
+#define MAZE_CORNER_DR (MAZE_WALL_DOWN | MAZE_WALL_RIGHT)
+
+/**
  * Returns the wall opposite to wall.
  *
  * The value of this macro is undefined for invalid input data.
