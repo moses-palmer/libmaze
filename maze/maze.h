@@ -117,8 +117,6 @@ maze_door_open(Maze *maze, int x, int y, unsigned char wall);
 /**
  * Calculates the coordinates of the room that lies on the other side of wall.
  *
- * If the room lies outside of the maze, x and y are not modified.
- *
  * @param maze
  *     The maze.
  * @param x, y

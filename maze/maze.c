@@ -52,16 +52,16 @@ maze_door_enter(Maze *maze, int *x, int *y, unsigned char wall,
         return 0;
     }
 
-    if (wall & MAZE_WALL_LEFT && *x > 0) {
+    if (wall & MAZE_WALL_LEFT) {
         (*x)--;
     }
-    else if (wall & MAZE_WALL_UP && *y > 0) {
+    else if (wall & MAZE_WALL_UP) {
         (*y)--;
     }
-    else if (wall & MAZE_WALL_RIGHT && *x < maze->width - 1) {
+    else if (wall & MAZE_WALL_RIGHT) {
         (*x)++;
     }
-    else if (wall & MAZE_WALL_DOWN && *y < maze->height - 1) {
+    else if (wall & MAZE_WALL_DOWN) {
         (*y)++;
     }
 
