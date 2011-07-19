@@ -31,7 +31,9 @@ maze_door_open(Maze *maze, int x, int y, unsigned char wall)
     }
 
     maze->data[y * maze->width + x].walls |= wall;
-    if (maze_door_enter(maze, &x, &y, wall, 0)) {
+
+    /* Open the opposite door in the other room if it lies within the maze */
+    if (maze_door_enter(maze, &x, &y, wall, 0) && maze_contains(maze, x, y)) {
         maze->data[y * maze->width + x].walls |= maze_wall_opposite(wall);
     }
 
