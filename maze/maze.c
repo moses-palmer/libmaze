@@ -26,7 +26,7 @@ int
 maze_door_open(Maze *maze, int x, int y, unsigned char wall)
 {
     /* The room lies outside of the maze */
-    if (x < 0 || x >= maze->width || y < 0 || y >= maze->height) {
+    if (!maze_contains(maze, x, y)) {
         return 0;
     }
 
@@ -43,7 +43,7 @@ maze_door_enter(Maze *maze, int *x, int *y, unsigned char wall,
     int only_if_open)
 {
     /* The room lies outside of the maze */
-    if (*x < 0 || *x >= maze->width || *y < 0 || *y >= maze->height) {
+    if (!maze_contains(maze, *x, *y)) {
         return 0;
     }
 
