@@ -11,12 +11,11 @@
  *
  * @param wall_width
  *     The width of a wall.
- * @param is_outer
- *     Whether the wall is along the edge of the maze. If this is the case, an
- *     outer wall is drawn as well.
+ * @param slope_width
+ *     The width of a slope.
  */
 static void
-draw_wall(double wall_width, double slope_width, int is_edge)
+draw_wall(double wall_width, double slope_width)
 {
     GLfloat d;
 
@@ -68,31 +67,6 @@ draw_wall(double wall_width, double slope_width, int is_edge)
         wall_width + slope_width,
         0.0);
     glEnd();
-
-    if (is_edge) {
-        glNormal3f(
-            0.0,
-            -1.0,
-            0.0);
-        glBegin(GL_QUADS);
-        glVertex3f(
-            0.0,
-            0.0,
-            1.0);
-        glVertex3f(
-            0.0,
-            0.0,
-            0.0);
-        glVertex3f(
-            1.0,
-            0.0,
-            0.0);
-        glVertex3f(
-            1.0,
-            0.0,
-            1.0);
-        glEnd();
-    }
 }
 
 /**
@@ -183,13 +157,104 @@ draw_corner(double wall_width, double slope_width)
     glEnd();
 }
 
+/**
+ * Draws the outer edge of a wall.
+ *
+ * The edge is rendered in the bottom part of the frame buffer.
+ *
+ * @param wall_width
+ *     The width of a wall.
+ * @param is_outer
+ *     Whether the wall is along the edge of the maze. If this is the case, an
+ *     outer wall is drawn as well.
+ */
+static void
+draw_edge(double wall_width, double slope_width, int is_open)
+{
+    if (is_open) {
+        glNormal3f(
+            0.0,
+            -1.0,
+            0.0);
+        glBegin(GL_QUADS);
+        glVertex3f(
+            0.0,
+            0.0,
+            1.0);
+        glVertex3f(
+            0.0,
+            0.0,
+            0.0);
+        glVertex3f(
+            wall_width + slope_width,
+            0.0,
+            0.0);
+        glVertex3f(
+            wall_width,
+            0.0,
+            1.0);
+        glEnd();
+
+        glNormal3f(
+            0.0,
+            -1.0,
+            0.0);
+        glBegin(GL_QUADS);
+        glVertex3f(
+            1.0 - wall_width,
+            0.0,
+            1.0);
+        glVertex3f(
+            1.0 - wall_width - slope_width,
+            0.0,
+            0.0);
+        glVertex3f(
+            1.0,
+            0.0,
+            0.0);
+        glVertex3f(
+            1.0,
+            0.0,
+            1.0);
+        glEnd();
+    }
+    else {
+        glNormal3f(
+            0.0,
+            -1.0,
+            0.0);
+        glBegin(GL_QUADS);
+        glVertex3f(
+            0.0,
+            0.0,
+            1.0);
+        glVertex3f(
+            0.0,
+            0.0,
+            0.0);
+        glVertex3f(
+            1.0,
+            0.0,
+            0.0);
+        glVertex3f(
+            1.0,
+            0.0,
+            1.0);
+        glEnd();
+    }
+}
+
 #define HANDLE_WALL(corner, wall, is_edge) \
     do { \
-        if (!maze_is_open_##wall(maze, x, y)) { \
-            draw_wall(wall_width, slope_width, is_edge); \
+        int is_open = maze_is_open_##wall(maze, x, y); \
+        if (!is_open) { \
+            draw_wall(wall_width, slope_width); \
         } \
         else if (maze_is_corner_##corner##_out(maze, x, y)) { \
             draw_corner(wall_width, slope_width); \
+        } \
+        if (is_edge) { \
+            draw_edge(wall_width, slope_width, is_open); \
         } \
     } while (0)
 
