@@ -16,22 +16,22 @@ enum {
 /**
  * The bit mask for the top left corner.
  */
-#define MAZE_CORNER_UL (MAZE_WALL_UP | MAZE_WALL_LEFT)
+#define MAZE_CORNER_UP_LEFT (MAZE_WALL_UP | MAZE_WALL_LEFT)
 
 /**
  * The bit mask for the top right corner.
  */
-#define MAZE_CORNER_UR (MAZE_WALL_UP | MAZE_WALL_RIGHT)
+#define MAZE_CORNER_UP_RIGHT (MAZE_WALL_UP | MAZE_WALL_RIGHT)
 
 /**
  * The bit mask for the bottom left corner.
  */
-#define MAZE_CORNER_DL (MAZE_WALL_DOWN | MAZE_WALL_LEFT)
+#define MAZE_CORNER_DOWN_LEFT (MAZE_WALL_DOWN | MAZE_WALL_LEFT)
 
 /**
  * The bit mask for the bottom right corner.
  */
-#define MAZE_CORNER_DR (MAZE_WALL_DOWN | MAZE_WALL_RIGHT)
+#define MAZE_CORNER_DOWN_RIGHT (MAZE_WALL_DOWN | MAZE_WALL_RIGHT)
 
 /**
  * Returns the wall opposite to wall.
@@ -277,34 +277,119 @@ maze_data_set(Maze *maze, int x, int y, void *data)
     (maze_room_get(maze, x, y) & MAZE_WALL_DOWN)
 
 /**
- * Macros to determine whether rooms have corners in different directions.
+ * Determines whether the room has a corner in the top left part.
+ *
+ * @param maze
+ *     The maze to check.
+ * @param x, y
+ *     The coordinates of the room.
+ * @return non-zero if the room has a corner
  */
-#define maze_is_corner_ul_out(maze, x, y) (1 \
-    && maze_is_open_left(maze, x, y) \
-    && maze_is_open_up(maze, x, y))
-#define maze_is_corner_ul_in(maze, x, y) (1 \
-    && !maze_is_open_left(maze, x, y) \
-    && !maze_is_open_up(maze, x, y))
+#define maze_is_corner_up_left(maze, x, y) (1 \
+    && !maze_is_open_up(maze, x, y) \
+    && !maze_is_open_left(maze, x, y))
 
-#define maze_is_corner_ur_out(maze, x, y) (1 \
-    && maze_is_open_up(maze, x, y) \
-    && maze_is_open_right(maze, x, y))
-#define maze_is_corner_ur_in(maze, x, y) (1 \
+/**
+ * Determines whether the room has a corner in the top right part.
+ *
+ * @param maze
+ *     The maze to check.
+ * @param x, y
+ *     The coordinates of the room.
+ * @return non-zero if the room has a corner
+ */
+#define maze_is_corner_up_right(maze, x, y) (1 \
     && !maze_is_open_up(maze, x, y) \
     && !maze_is_open_right(maze, x, y))
 
-#define maze_is_corner_dr_out(maze, x, y) (1 \
-    && maze_is_open_right(maze, x, y) \
-    && maze_is_open_down(maze, x, y))
-#define maze_is_corner_dr_in(maze, x, y) (1 \
-    && !maze_is_open_right(maze, x, y) \
-    && !maze_is_open_down(maze, x, y))
-
-#define maze_is_corner_dl_out(maze, x, y) (1 \
-    && maze_is_open_down(maze, x, y) \
-    && maze_is_open_left(maze, x, y))
-#define maze_is_corner_dl_in(maze, x, y) (1 \
+/**
+ * Determines whether the room has a corner in the bottom left part.
+ *
+ * @param maze
+ *     The maze to check.
+ * @param x, y
+ *     The coordinates of the room.
+ * @return non-zero if the room has a corner
+ */
+#define maze_is_corner_down_left(maze, x, y) (1 \
     && !maze_is_open_down(maze, x, y) \
     && !maze_is_open_left(maze, x, y))
+
+/**
+ * Determines whether the room has a corner in the bottom right part.
+ *
+ * @param maze
+ *     The maze to check.
+ * @param x, y
+ *     The coordinates of the room.
+ * @return non-zero if the room has a corner
+ */
+#define maze_is_corner_down_right(maze, x, y) (1 \
+    && !maze_is_open_down(maze, x, y) \
+    && !maze_is_open_right(maze, x, y))
+
+/**
+ * Determines whether the room has a protruding corner in the top left part.
+ *
+ * @param maze
+ *     The maze to check.
+ * @param x, y
+ *     The coordinates of the room.
+ * @return non-zero if the room has a protruding corner
+ */
+#define maze_is_corner_up_left_out(maze, x, y) (1 \
+    && maze_is_open_up(maze, x, y) \
+    && maze_is_open_left(maze, x, y) \
+    && (0 \
+        || !maze_is_open_up(maze, x - 1, y) \
+        || !maze_is_open_left(maze, x, y - 1)))
+
+/**
+ * Determines whether the room has a protruding corner in the top right part.
+ *
+ * @param maze
+ *     The maze to check.
+ * @param x, y
+ *     The coordinates of the room.
+ * @return non-zero if the room has a protruding corner
+ */
+#define maze_is_corner_up_right_out(maze, x, y) (1 \
+    && maze_is_open_up(maze, x, y) \
+    && maze_is_open_right(maze, x, y) \
+    && (0 \
+        || !maze_is_open_up(maze, x + 1, y) \
+        || !maze_is_open_right(maze, x, y - 1)))
+
+/**
+ * Determines whether the room has a protruding corner in the bottom left part.
+ *
+ * @param maze
+ *     The maze to check.
+ * @param x, y
+ *     The coordinates of the room.
+ * @return non-zero if the room has a protruding corner
+ */
+#define maze_is_corner_down_left_out(maze, x, y) (1 \
+    && maze_is_open_down(maze, x, y) \
+    && maze_is_open_left(maze, x, y) \
+    && (0 \
+        || !maze_is_open_down(maze, x - 1, y) \
+        || !maze_is_open_left(maze, x, y + 1)))
+
+/**
+ * Determines whether the room has a protruding corner in the bottom right part.
+ *
+ * @param maze
+ *     The maze to check.
+ * @param x, y
+ *     The coordinates of the room.
+ * @return non-zero if the room has a protruding corner
+ */
+#define maze_is_corner_down_right_out(maze, x, y) (1 \
+    && maze_is_open_down(maze, x, y) \
+    && maze_is_open_right(maze, x, y) \
+    && (0 \
+        || !maze_is_open_down(maze, x + 1, y) \
+        || !maze_is_open_right(maze, x, y + 1)))
 
 #endif

@@ -185,11 +185,11 @@ draw_corner(double wall_width, double slope_width)
 
 #define HANDLE_WALL(corner, wall, is_edge) \
     do { \
-        if (maze_is_corner_##corner##_out(maze, x, y)) { \
-            draw_corner(wall_width, slope_width); \
-        } \
-        else if (!maze_is_open_##wall(maze, x, y)) { \
+        if (!maze_is_open_##wall(maze, x, y)) { \
             draw_wall(wall_width, slope_width, is_edge); \
+        } \
+        else if (maze_is_corner_##corner##_out(maze, x, y)) { \
+            draw_corner(wall_width, slope_width); \
         } \
     } while (0)
 
@@ -202,16 +202,16 @@ static void
 draw_room(Maze *maze, unsigned int x, unsigned int y, double wall_width,
     double slope_width, int draw_floor)
 {
-    HANDLE_WALL(dl, down, y == maze->height - 1);
+    HANDLE_WALL(down_left, down, y == maze->height - 1);
     NEXT_WALL();
 
-    HANDLE_WALL(ul, left, x == 0);
+    HANDLE_WALL(up_left, left, x == 0);
     NEXT_WALL();
 
-    HANDLE_WALL(ur, up, y == 0);
+    HANDLE_WALL(up_right, up, y == 0);
     NEXT_WALL();
 
-    HANDLE_WALL(dr, right, x == maze->width - 1);
+    HANDLE_WALL(down_right, right, x == maze->width - 1);
     NEXT_WALL();
 
     if (!draw_floor) {
