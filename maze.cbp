@@ -36,6 +36,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="README" />
 		<Unit filename="maze/maze-randomized-prim.c">
 			<Option compilerVar="CC" />
 		</Unit>
