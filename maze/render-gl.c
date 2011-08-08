@@ -438,13 +438,13 @@ draw_floor(Maze *maze, unsigned int x, unsigned int y, double floor_width)
 
 int
 maze_render_gl(Maze *maze, double wall_width, double slope_width,
-    int cx, int cy, unsigned int d, int flags)
+    double floor_thickness, int cx, int cy, unsigned int d, int flags)
 {
     int x, y;
 
     /* Verify input parameters */
-    if (!maze || wall_width < 0.0 || slope_width < 0.0
-            || wall_width + slope_width > 0.5
+    if (!maze || wall_width < 0.0 || slope_width < 0.0 || floor_thickness < 0.0
+            || wall_width + slope_width > 0.5 || floor_thickness > 1.0
             || flags & ~MAZE_RENDER_GL_MASK) {
         return 0;
     }
@@ -466,7 +466,7 @@ maze_render_gl(Maze *maze, double wall_width, double slope_width,
                 draw_room(maze, x, y, wall_width, slope_width);
             }
             if (flags & MAZE_RENDER_GL_FLOOR) {
-                draw_floor(maze, x, y, 0.1);
+                draw_floor(maze, x, y, floor_thickness);
             }
             glPopMatrix();
         }

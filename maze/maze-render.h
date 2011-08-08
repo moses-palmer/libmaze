@@ -55,6 +55,8 @@ enum {
  *     that is interpreted as the portion of a half room that is wall.
  * @param slope_width
  *     The width of the slope from the top to the floor.
+ * @param floor_thickness
+ *     The thickness of the floor, if drawn.
  * @param cx
  *     The x-coordinate of the centre room.
  * @param cy
@@ -69,6 +71,6 @@ enum {
  */
 int
 maze_render_gl(Maze *maze, double wall_width, double slope_width,
-    int cx, int cy, unsigned int d, int flags);
+    double floor_thickness, int cx, int cy, unsigned int d, int flags);
 
 #endif
