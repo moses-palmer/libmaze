@@ -31,6 +31,9 @@ enum {
     /** Render the floor */
     MAZE_RENDER_GL_FLOOR = 1 << 1,
 
+    /** Render the top of walls */
+    MAZE_RENDER_GL_TOP = 1 << 2,
+
     MAZE_RENDER_GL_LAST
 };
 

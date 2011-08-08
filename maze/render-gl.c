@@ -48,114 +48,48 @@ rectangle(
     glEnd();
 }
 
-/**
- * Draws a wall.
- *
- * The wall is rendered in the bottom part of the frame buffer.
- *
- * @param wall_width
- *     The width of a wall.
- * @param slope_width
- *     The width of a slope.
- */
-static void
-draw_wall(double wall_width, double slope_width)
-{
-    /* The top */
-    rectangle(
-        0.0, wall_width, 1.0,
-        0.0, 0.0, 1.0,
-        1.0, 0.0, 1.0,
-        1.0, wall_width, 1.0);
-
-    /* The vertical part */
-    rectangle(
-        0.0, wall_width + slope_width, 0.0,
-        0.0, wall_width, 1.0,
-        1.0, wall_width, 1.0,
-        1.0, wall_width + slope_width, 0.0);
-}
-
-/**
- * Draws a corner.
- *
- * The corner is rendered in the bottom left part of the frame buffer.
- *
- * @param wall_width
- *     The width of a wall.
- */
-static void
-draw_corner(double wall_width, double slope_width)
-{
-    /* The top */
-    rectangle(
-        0.0, wall_width, 1.0,
-        0.0, 0.0, 1.0,
-        wall_width, 0.0, 1.0,
-        wall_width, wall_width, 1.0);
-
-    /* The top vertical part */
-    rectangle(
-        0.0, wall_width + slope_width, 0.0,
-        0.0, wall_width, 1.0,
-        wall_width, wall_width, 1.0,
-        wall_width + slope_width, wall_width + slope_width, 0.0);
-
-    /* The right vertical part */
-    rectangle(
-        wall_width, wall_width, 1.0,
-        wall_width, 0.0, 1.0,
-        wall_width + slope_width, 0.0, 0.0,
-        wall_width + slope_width, wall_width + slope_width, 0.0);
-}
-
-/**
- * Draws the outer edge of a wall.
- *
- * The edge is rendered in the bottom part of the frame buffer.
- *
- * @param wall_width
- *     The width of a wall.
- * @param is_outer
- *     Whether the wall is along the edge of the maze. If this is the case, an
- *     outer wall is drawn as well.
- */
-static void
-draw_edge(double wall_width, double slope_width, int is_open)
-{
-    if (is_open) {
-        rectangle(
-            0.0, 0.0, 1.0,
-            0.0, 0.0, 0.0,
-            wall_width + slope_width, 0.0, 0.0,
-            wall_width, 0.0, 1.0);
-
-        rectangle(
-            1.0 - wall_width, 0.0, 1.0,
-            1.0 - wall_width - slope_width, 0.0, 0.0,
-            1.0, 0.0, 0.0,
-            1.0, 0.0, 1.0);
-    }
-    else {
-        rectangle(
-            0.0, 0.0, 1.0,
-            0.0, 0.0, 0.0,
-            1.0, 0.0, 0.0,
-            1.0, 0.0, 1.0);
-    }
-}
-
 #define HANDLE_WALL(corner, wall, is_edge) \
     do { \
         int is_open = maze_is_open_##wall(maze, x, y); \
         if (!is_open) { \
-            draw_wall(wall_width, slope_width); \
+            rectangle( \
+                0.0, wall_width + slope_width, 0.0, \
+                0.0, wall_width, 1.0, \
+                1.0, wall_width, 1.0, \
+                1.0, wall_width + slope_width, 0.0); \
         } \
         else if (maze_is_corner_##corner##_out(maze, x, y)) { \
-            draw_corner(wall_width, slope_width); \
+            rectangle( \
+                0.0, wall_width + slope_width, 0.0, \
+                0.0, wall_width, 1.0, \
+                wall_width, wall_width, 1.0, \
+                wall_width + slope_width, wall_width + slope_width, 0.0); \
+            rectangle( \
+                wall_width, wall_width, 1.0, \
+                wall_width, 0.0, 1.0, \
+                wall_width + slope_width, 0.0, 0.0, \
+                wall_width + slope_width, wall_width + slope_width, 0.0); \
         } \
         if (is_edge) { \
-            draw_edge(wall_width, slope_width, is_open); \
+            if (is_open) { \
+                rectangle( \
+                    0.0, 0.0, 1.0, \
+                    0.0, 0.0, 0.0, \
+                    wall_width + slope_width, 0.0, 0.0, \
+                    wall_width, 0.0, 1.0); \
+                rectangle( \
+                    1.0 - wall_width, 0.0, 1.0, \
+                    1.0 - wall_width - slope_width, 0.0, 0.0, \
+                    1.0, 0.0, 0.0, \
+                    1.0, 0.0, 1.0); \
+            } \
+            else { \
+                rectangle( \
+                    0.0, 0.0, 1.0, \
+                    0.0, 0.0, 0.0, \
+                    1.0, 0.0, 0.0, \
+                    1.0, 0.0, 1.0); \
+            } \
         } \
     } while (0)
 
@@ -165,7 +99,7 @@ draw_edge(double wall_width, double slope_width, int is_open)
     glTranslatef(-0.5, -0.5, 0.0)
 
 static void
-draw_room(Maze *maze, unsigned int x, unsigned int y, double wall_width,
+define_walls(Maze *maze, unsigned int x, unsigned int y, double wall_width,
     double slope_width)
 {
     HANDLE_WALL(down_left, down, y == maze->height - 1);
@@ -182,7 +116,7 @@ draw_room(Maze *maze, unsigned int x, unsigned int y, double wall_width,
 }
 
 static void
-draw_floor(Maze *maze, unsigned int x, unsigned int y, double floor_width)
+define_floor(Maze *maze, unsigned int x, unsigned int y, double floor_width)
 {
     /* The top part */
     rectangle(
@@ -235,6 +169,47 @@ draw_floor(Maze *maze, unsigned int x, unsigned int y, double floor_width)
     }
 }
 
+#define HANDLE_TOP(corner, wall, is_edge) \
+    do { \
+        int is_open = maze_is_open_##wall(maze, x, y); \
+        if (!is_open) { \
+            rectangle( \
+                0.0, wall_width, 1.0, \
+                0.0, 0.0, 1.0, \
+                1.0, 0.0, 1.0, \
+                1.0, wall_width, 1.0); \
+        } \
+        else if (maze_is_corner_##corner##_out(maze, x, y)) { \
+            rectangle( \
+                0.0, wall_width, 1.0, \
+                0.0, 0.0, 1.0, \
+                wall_width, 0.0, 1.0, \
+                wall_width, wall_width, 1.0); \
+        } \
+    } while (0)
+
+#define NEXT_TOP() \
+    glTranslatef(0.5, 0.5, 0.0); \
+    glRotatef(90.0, 0.0, 0.0, -1.0); \
+    glTranslatef(-0.5, -0.5, 0.0)
+
+static void
+define_top(Maze *maze, unsigned int x, unsigned int y, double wall_width,
+    double slope_width)
+{
+    HANDLE_TOP(down_left, down, y == maze->height - 1);
+    NEXT_TOP();
+
+    HANDLE_TOP(up_left, left, x == 0);
+    NEXT_TOP();
+
+    HANDLE_TOP(up_right, up, y == 0);
+    NEXT_TOP();
+
+    HANDLE_TOP(down_right, right, x == maze->width - 1);
+    NEXT_TOP();
+}
+
 int
 maze_render_gl(Maze *maze, double wall_width, double slope_width,
     double floor_thickness, int cx, int cy, unsigned int d, int flags)
@@ -262,10 +237,13 @@ maze_render_gl(Maze *maze, double wall_width, double slope_width,
             glPushMatrix();
             glTranslatef(x, maze->height - 1 - y, 0.0);
             if (flags & MAZE_RENDER_GL_WALLS) {
-                draw_room(maze, x, y, wall_width, slope_width);
+                define_walls(maze, x, y, wall_width, slope_width);
             }
             if (flags & MAZE_RENDER_GL_FLOOR) {
-                draw_floor(maze, x, y, floor_thickness);
+                define_floor(maze, x, y, floor_thickness);
+            }
+            if (flags & MAZE_RENDER_GL_TOP) {
+                define_top(maze, x, y, wall_width, slope_width);
             }
             glPopMatrix();
         }
