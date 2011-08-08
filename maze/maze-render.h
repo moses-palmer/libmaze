@@ -34,6 +34,9 @@ enum {
     /** Render the top of walls */
     MAZE_RENDER_GL_TOP = 1 << 2,
 
+    /** Whether to apply texture coordinates to the maze vertices */
+    MAZE_RENDER_GL_TEXTURE = 1 << 3,
+
     MAZE_RENDER_GL_LAST
 };
 
