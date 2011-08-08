@@ -38,9 +38,11 @@ rectangle(
     double d = 1.0 / sqrt(n.x * n.x + n.y * n.y + n.z * n.z);
 
     glNormal3f(d * n.x, d * n.y, d * n.z);
-    glBegin(GL_QUADS);
+    glBegin(GL_TRIANGLES);
     glVertex3f(x1, y1, z1);
     glVertex3f(x2, y2, z2);
+    glVertex3f(x3, y3, z3);
+    glVertex3f(x1, y1, z1);
     glVertex3f(x3, y3, z3);
     glVertex3f(x4, y4, z4);
     glEnd();
