@@ -22,6 +22,24 @@ maze_render_print(Maze *maze, unsigned int room_width, unsigned int room_height,
     char wall_char, char floor_char);
 
 /**
+ * Flags for maze_render_gl.
+ */
+enum {
+    /** Render the walls */
+    MAZE_RENDER_GL_WALLS = 1 << 0,
+
+    /** Render the floor */
+    MAZE_RENDER_GL_FLOOR = 1 << 1,
+
+    MAZE_RENDER_GL_LAST
+};
+
+/**
+ * The mask of valid flags for maze_render_gl.
+ */
+#define MAZE_RENDER_GL_MASK (((MAZE_RENDER_GL_LAST - 1) << 1) - 1)
+
+/**
  * Renders a maze to the current frame buffer.
  *
  * The rooms will be placed as if the room at (0, 0) is rendered at (0, 0, 0).
@@ -37,8 +55,6 @@ maze_render_print(Maze *maze, unsigned int room_width, unsigned int room_height,
  *     that is interpreted as the portion of a half room that is wall.
  * @param slope_width
  *     The width of the slope from the top to the floor.
- * @param draw_floor
- *     Whether to draw the floor.
  * @param cx
  *     The x-coordinate of the centre room.
  * @param cy
@@ -46,9 +62,13 @@ maze_render_print(Maze *maze, unsigned int room_width, unsigned int room_height,
  * @param d
  *     The number of rooms to render in each direction. The maximum number of
  *     rooms that are rendered is (2 * d) * (2 * d).
+ * @param flags
+ *     Flags that affect the operation. See the MAZE_RENDER_GL_* constants for
+ *     more information.
+ * @return 0 if a parameter is incorrect and non-zero otherwise
  */
-void
+int
 maze_render_gl(Maze *maze, double wall_width, double slope_width,
-    int draw_floor, int cx, int cy, unsigned int d);
+    int cx, int cy, unsigned int d, int flags);
 
 #endif
