@@ -5,6 +5,48 @@
 #include "maze-render.h"
 
 /**
+ * Defines a rectangle in 3D space.
+ *
+ * The normal will be calculated, but only for the triangle (1) - (2) - (4);
+ * thus the points must be on a plane.
+ *
+ * @param x1, y1, z1
+ *     The coordinates of the top left corner.
+ * @param x2, y2, z2
+ *     The coordinates of the bottom left corner.
+ * @param x3, y3, z3
+ *     The coordinates of the bottom right corner.
+ * @param x4, y4, z4
+ *     The coordinates of the top right corner.
+ */
+static inline void
+rectangle(
+    double x1, double y1, double z1,
+    double x2, double y2, double z2,
+    double x3, double y3, double z3,
+    double x4, double y4, double z4)
+{
+    struct {
+        double x, y, z;
+    } u = {x2 - x1, y2 - y1, z2 - z1};
+    struct {
+        double x, y, z;
+    } v = {x4 - x1, y4 - y1, z4 - z1};
+    struct {
+        double x, y, z;
+    } n = {u.y * v.z - u.z * v.y, u.z * v.x - u.x * v.z, u.x * v.y - u.y * v.x};
+    double d = 1.0 / sqrt(n.x * n.x + n.y * n.y + n.z * n.z);
+
+    glNormal3f(d * n.x, d * n.y, d * n.z);
+    glBegin(GL_QUADS);
+    glVertex3f(x1, y1, z1);
+    glVertex3f(x2, y2, z2);
+    glVertex3f(x3, y3, z3);
+    glVertex3f(x4, y4, z4);
+    glEnd();
+}
+
+/**
  * Draws a wall.
  *
  * The wall is rendered in the bottom part of the frame buffer.
@@ -17,56 +59,19 @@
 static void
 draw_wall(double wall_width, double slope_width)
 {
-    GLfloat d;
-
     /* The top */
-    glNormal3f(
-        0.0,
-        0.0,
-        1.0);
-    glBegin(GL_QUADS);
-    glVertex3f(
-        0.0,
-        wall_width,
-        1.0);
-    glVertex3f(
-        0.0,
-        0.0,
-        1.0);
-    glVertex3f(
-        1.0,
-        0.0,
-        1.0);
-    glVertex3f(
-        1.0,
-        wall_width,
-        1.0);
-    glEnd();
+    rectangle(
+        0.0, wall_width, 1.0,
+        0.0, 0.0, 1.0,
+        1.0, 0.0, 1.0,
+        1.0, wall_width, 1.0);
 
     /* The vertical part */
-    d = 1.0 / sqrt(1 + slope_width * slope_width);
-    glNormal3f(
-        0.0,
-        d,
-        slope_width * d);
-    glBegin(GL_QUADS);
-    glVertex3f(
-        0.0,
-        wall_width,
-        1.0);
-    glVertex3f(
-        1.0,
-        wall_width,
-        1.0);
-    glVertex3f(
-        1.0,
-        wall_width + slope_width,
-        0.0);
-    glVertex3f(
-        0.0,
-        wall_width + slope_width,
-        0.0);
-    glEnd();
+    rectangle(
+        0.0, wall_width + slope_width, 0.0,
+        0.0, wall_width, 1.0,
+        1.0, wall_width, 1.0,
+        1.0, wall_width + slope_width, 0.0);
 }
 
 /**
@@ -80,81 +85,26 @@ draw_wall(double wall_width, double slope_width)
 static void
 draw_corner(double wall_width, double slope_width)
 {
-    GLfloat d;
-
     /* The top */
-    glNormal3f(
-        0.0,
-        0.0,
-        1.0);
-    glBegin(GL_QUADS);
-    glVertex3f(
-        0.0,
-        wall_width,
-        1.0);
-    glVertex3f(
-        0.0,
-        0.0,
-        1.0);
-    glVertex3f(
-        wall_width,
-        0.0,
-        1.0);
-    glVertex3f(
-        wall_width,
-        wall_width,
-        1.0);
-    glEnd();
+    rectangle(
+        0.0, wall_width, 1.0,
+        0.0, 0.0, 1.0,
+        wall_width, 0.0, 1.0,
+        wall_width, wall_width, 1.0);
 
     /* The top vertical part */
-    d = 1.0 / sqrt(1 + slope_width * slope_width);
-    glNormal3f(
-        0.0,
-        d,
-        slope_width * d);
-    glBegin(GL_QUADS);
-    glVertex3f(
-        0.0,
-        wall_width,
-        1.0);
-    glVertex3f(
-        wall_width,
-        wall_width,
-        1.0);
-    glVertex3f(
-        wall_width + slope_width,
-        wall_width + slope_width,
-        0.0);
-    glVertex3f(
-        0.0,
-        wall_width + slope_width,
-        0.0);
-    glEnd();
+    rectangle(
+        0.0, wall_width + slope_width, 0.0,
+        0.0, wall_width, 1.0,
+        wall_width, wall_width, 1.0,
+        wall_width + slope_width, wall_width + slope_width, 0.0);
 
     /* The right vertical part */
-    d = 1.0 / sqrt(1 + slope_width * slope_width);
-    glNormal3f(
-        d,
-        0.0,
-        slope_width * d);
-    glBegin(GL_QUADS);
-    glVertex3f(
-        wall_width,
-        wall_width,
-        1.0);
-    glVertex3f(
-        wall_width,
-        0.0,
-        1.0);
-    glVertex3f(
-        wall_width + slope_width,
-        0.0,
-        0.0);
-    glVertex3f(
-        wall_width + slope_width,
-        wall_width + slope_width,
-        0.0);
-    glEnd();
+    rectangle(
+        wall_width, wall_width, 1.0,
+        wall_width, 0.0, 1.0,
+        wall_width + slope_width, 0.0, 0.0,
+        wall_width + slope_width, wall_width + slope_width, 0.0);
 }
 
 /**
@@ -172,75 +122,24 @@ static void
 draw_edge(double wall_width, double slope_width, int is_open)
 {
     if (is_open) {
-        glNormal3f(
-            0.0,
-            -1.0,
-            0.0);
-        glBegin(GL_QUADS);
-        glVertex3f(
-            0.0,
-            0.0,
-            1.0);
-        glVertex3f(
-            0.0,
-            0.0,
-            0.0);
-        glVertex3f(
-            wall_width + slope_width,
-            0.0,
-            0.0);
-        glVertex3f(
-            wall_width,
-            0.0,
-            1.0);
-        glEnd();
+        rectangle(
+            0.0, 0.0, 1.0,
+            0.0, 0.0, 0.0,
+            wall_width + slope_width, 0.0, 0.0,
+            wall_width, 0.0, 1.0);
 
-        glNormal3f(
-            0.0,
-            -1.0,
-            0.0);
-        glBegin(GL_QUADS);
-        glVertex3f(
-            1.0 - wall_width,
-            0.0,
-            1.0);
-        glVertex3f(
-            1.0 - wall_width - slope_width,
-            0.0,
-            0.0);
-        glVertex3f(
-            1.0,
-            0.0,
-            0.0);
-        glVertex3f(
-            1.0,
-            0.0,
-            1.0);
-        glEnd();
+        rectangle(
+            1.0 - wall_width, 0.0, 1.0,
+            1.0 - wall_width - slope_width, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 1.0);
     }
     else {
-        glNormal3f(
-            0.0,
-            -1.0,
-            0.0);
-        glBegin(GL_QUADS);
-        glVertex3f(
-            0.0,
-            0.0,
-            1.0);
-        glVertex3f(
-            0.0,
-            0.0,
-            0.0);
-        glVertex3f(
-            1.0,
-            0.0,
-            0.0);
-        glVertex3f(
-            1.0,
-            0.0,
-            1.0);
-        glEnd();
+        rectangle(
+            0.0, 0.0, 1.0,
+            0.0, 0.0, 0.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, 1.0);
     }
 }
 
@@ -284,155 +183,53 @@ static void
 draw_floor(Maze *maze, unsigned int x, unsigned int y, double floor_width)
 {
     /* The top part */
-    glNormal3f(
-        0.0,
-        0.0,
-        1.0);
-    glBegin(GL_QUADS);
-    glVertex3f(
-        0.0,
-        1.0,
-        0.0);
-    glVertex3f(
-        0.0,
-        0.0,
-        0.0);
-    glVertex3f(
-        1.0,
-        0.0,
-        0.0);
-    glVertex3f(
-        1.0,
-        1.0,
-        0.0);
-    glEnd();
+    rectangle(
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0,
+        1.0, 0.0, 0.0,
+        1.0, 1.0, 0.0);
 
     /* The bottom part */
-    glNormal3f(
-        0.0,
-        0.0,
-        -1.0);
-    glBegin(GL_QUADS);
-    glVertex3f(
-        0.0,
-        1.0,
-        -floor_width);
-    glVertex3f(
-        1.0,
-        1.0,
-        -floor_width);
-    glVertex3f(
-        1.0,
-        0.0,
-        -floor_width);
-    glVertex3f(
-        0.0,
-        0.0,
-        -floor_width);
-    glEnd();
+    rectangle(
+        0.0, 1.0, -floor_width,
+        1.0, 1.0, -floor_width,
+        1.0, 0.0, -floor_width,
+        0.0, 0.0, -floor_width);
 
     /* Is there a left edge? */
     if (x == 0) {
-        glNormal3f(
-            -1.0,
-            0.0,
-            0.0);
-        glBegin(GL_QUADS);
-        glVertex3f(
-            0.0,
-            1.0,
-            0.0);
-        glVertex3f(
-            0.0,
-            1.0,
-            -floor_width);
-        glVertex3f(
-            0.0,
-            0.0,
-            -floor_width);
-        glVertex3f(
-            0.0,
-            0.0,
-            0.0);
-        glEnd();
+        rectangle(
+            0.0, 1.0, 0.0,
+            0.0, 1.0, -floor_width,
+            0.0, 0.0, -floor_width,
+            0.0, 0.0, 0.0);
     }
 
     /* Is there an up edge? */
     if (y == 0) {
-        glNormal3f(
-            0.0,
-            1.0,
-            0.0);
-        glBegin(GL_QUADS);
-        glVertex3f(
-            0.0,
-            1.0,
-            0.0);
-        glVertex3f(
-            1.0,
-            1.0,
-            0.0);
-        glVertex3f(
-            1.0,
-            1.0,
-            -floor_width);
-        glVertex3f(
-            0.0,
-            1.0,
-            -floor_width);
-        glEnd();
+        rectangle(
+            0.0, 1.0, 0.0,
+            1.0, 1.0, 0.0,
+            1.0, 1.0, -floor_width,
+            0.0, 1.0, -floor_width);
     }
 
     /* Is there a right edge? */
     if (x == maze->width - 1) {
-        glNormal3f(
-            1.0,
-            0.0,
-            0.0);
-        glBegin(GL_QUADS);
-        glVertex3f(
-            1.0,
-            1.0,
-            0.0);
-        glVertex3f(
-            1.0,
-            0.0,
-            0.0);
-        glVertex3f(
-            1.0,
-            0.0,
-            -floor_width);
-        glVertex3f(
-            1.0,
-            1.0,
-            -floor_width);
-        glEnd();
+        rectangle(
+            1.0, 1.0, 0.0,
+            1.0, 0.0, 0.0,
+            1.0, 0.0, -floor_width,
+            1.0, 1.0, -floor_width);
     }
 
     /* Is there a down edge? */
     if (y == maze->height - 1) {
-        glNormal3f(
-            0.0,
-            -1.0,
-            0.0);
-        glBegin(GL_QUADS);
-        glVertex3f(
-            0.0,
-            0.0,
-            0.0);
-        glVertex3f(
-            0.0,
-            0.0,
-            -floor_width);
-        glVertex3f(
-            1.0,
-            0.0,
-            -floor_width);
-        glVertex3f(
-            1.0,
-            0.0,
-            0.0);
-        glEnd();
+        rectangle(
+            0.0, 0.0, 0.0,
+            0.0, 0.0, -floor_width,
+            1.0, 0.0, -floor_width,
+            1.0, 0.0, 0.0);
     }
 }
 
