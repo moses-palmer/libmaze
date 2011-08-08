@@ -27,6 +27,9 @@ maze_render_print(Maze *maze, unsigned int room_width, unsigned int room_height,
  * The rooms will be placed as if the room at (0, 0) is rendered at (0, 0, 0).
  * Every room will be 1.0 * 1.0 * 1.0 dimension units in size.
  *
+ * The floor, if rendered, will be placed below the walls and thus protrude in
+ * the negative z-axis.
+ *
  * @param maze
  *     The maze to render.
  * @param wall_width

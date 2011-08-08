@@ -265,7 +265,7 @@ draw_edge(double wall_width, double slope_width, int is_open)
 
 static void
 draw_room(Maze *maze, unsigned int x, unsigned int y, double wall_width,
-    double slope_width, int draw_floor)
+    double slope_width)
 {
     HANDLE_WALL(down_left, down, y == maze->height - 1);
     NEXT_WALL();
@@ -278,12 +278,12 @@ draw_room(Maze *maze, unsigned int x, unsigned int y, double wall_width,
 
     HANDLE_WALL(down_right, right, x == maze->width - 1);
     NEXT_WALL();
+}
 
-    if (!draw_floor) {
-        return;
-    }
-
-    /* The floor */
+static void
+draw_floor(Maze *maze, unsigned int x, unsigned int y, double floor_width)
+{
+    /* The top part */
     glNormal3f(
         0.0,
         0.0,
@@ -306,6 +306,134 @@ draw_room(Maze *maze, unsigned int x, unsigned int y, double wall_width,
         1.0,
         0.0);
     glEnd();
+
+    /* The bottom part */
+    glNormal3f(
+        0.0,
+        0.0,
+        -1.0);
+    glBegin(GL_QUADS);
+    glVertex3f(
+        0.0,
+        1.0,
+        -floor_width);
+    glVertex3f(
+        1.0,
+        1.0,
+        -floor_width);
+    glVertex3f(
+        1.0,
+        0.0,
+        -floor_width);
+    glVertex3f(
+        0.0,
+        0.0,
+        -floor_width);
+    glEnd();
+
+    /* Is there a left edge? */
+    if (x == 0) {
+        glNormal3f(
+            -1.0,
+            0.0,
+            0.0);
+        glBegin(GL_QUADS);
+        glVertex3f(
+            0.0,
+            1.0,
+            0.0);
+        glVertex3f(
+            0.0,
+            1.0,
+            -floor_width);
+        glVertex3f(
+            0.0,
+            0.0,
+            -floor_width);
+        glVertex3f(
+            0.0,
+            0.0,
+            0.0);
+        glEnd();
+    }
+
+    /* Is there an up edge? */
+    if (y == 0) {
+        glNormal3f(
+            0.0,
+            1.0,
+            0.0);
+        glBegin(GL_QUADS);
+        glVertex3f(
+            0.0,
+            1.0,
+            0.0);
+        glVertex3f(
+            1.0,
+            1.0,
+            0.0);
+        glVertex3f(
+            1.0,
+            1.0,
+            -floor_width);
+        glVertex3f(
+            0.0,
+            1.0,
+            -floor_width);
+        glEnd();
+    }
+
+    /* Is there a right edge? */
+    if (x == maze->width - 1) {
+        glNormal3f(
+            1.0,
+            0.0,
+            0.0);
+        glBegin(GL_QUADS);
+        glVertex3f(
+            1.0,
+            1.0,
+            0.0);
+        glVertex3f(
+            1.0,
+            0.0,
+            0.0);
+        glVertex3f(
+            1.0,
+            0.0,
+            -floor_width);
+        glVertex3f(
+            1.0,
+            1.0,
+            -floor_width);
+        glEnd();
+    }
+
+    /* Is there a down edge? */
+    if (y == maze->height - 1) {
+        glNormal3f(
+            0.0,
+            -1.0,
+            0.0);
+        glBegin(GL_QUADS);
+        glVertex3f(
+            0.0,
+            0.0,
+            0.0);
+        glVertex3f(
+            0.0,
+            0.0,
+            -floor_width);
+        glVertex3f(
+            1.0,
+            0.0,
+            -floor_width);
+        glVertex3f(
+            1.0,
+            0.0,
+            0.0);
+        glEnd();
+    }
 }
 
 void
@@ -327,7 +455,10 @@ maze_render_gl(Maze *maze, double wall_width, double slope_width,
 
             glPushMatrix();
             glTranslatef(x, maze->height - 1 - y, 0.0);
-            draw_room(maze, x, y, wall_width, slope_width, draw_floor);
+            draw_room(maze, x, y, wall_width, slope_width);
+            if (draw_floor) {
+                draw_floor(maze, x, y, 0.1);
+            }
             glPopMatrix();
         }
     }
