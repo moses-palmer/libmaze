@@ -169,8 +169,8 @@ rectangle(
     glTranslatef(-0.5, -0.5, 0.0)
 
 static void
-define_walls(Maze *maze, unsigned int x, unsigned int y, double wall_width,
-    double slope_width, int render_texture)
+define_walls(Maze *maze, int x, int y, double wall_width, double slope_width,
+    int render_texture)
 {
     HANDLE_WALL(down, left, y == maze->height - 1);
     NEXT_WALL();
@@ -186,8 +186,7 @@ define_walls(Maze *maze, unsigned int x, unsigned int y, double wall_width,
 }
 
 static void
-define_floor(Maze *maze, unsigned int x, unsigned int y, double floor_width,
-    int render_texture)
+define_floor(Maze *maze, int x, int y, double floor_width, int render_texture)
 {
     /* The top part */
     rectangle(
@@ -320,8 +319,8 @@ define_floor(Maze *maze, unsigned int x, unsigned int y, double floor_width,
     glTranslatef(-0.5, -0.5, 0.0)
 
 static void
-define_top(Maze *maze, unsigned int x, unsigned int y, double wall_width,
-    double slope_width, int render_texture)
+define_top(Maze *maze, int x, int y, double wall_width, double slope_width,
+    int render_texture)
 {
     HANDLE_TOP(down, left, y == maze->height - 1);
     NEXT_TOP();
@@ -361,7 +360,7 @@ maze_render_gl(Maze *maze, double wall_width, double slope_width,
             }
 
             glPushMatrix();
-            glTranslatef(x, maze->height - 1 - y, 0.0);
+            glTranslatef(x, (int)maze->height - 1 - y, 0.0);
             if (flags & MAZE_RENDER_GL_WALLS) {
                 define_walls(maze, x, y, wall_width, slope_width,
                     flags & MAZE_RENDER_GL_TEXTURE);
