@@ -262,17 +262,50 @@ maze_data_set(Maze *maze, int x, int y, void *data)
 }
 
 /**
- * Macros to determine whether walls are open.
+ * Determines whether the left door is open.
+ *
+ * @param maze
+ *     The maze to check.
+ * @param x, y
+ *     The coordinates of the room.
+ * @return non-zero if the door is open
  */
 #define maze_is_open_left(maze, x, y) \
     (maze_room_get(maze, x, y) & MAZE_WALL_LEFT)
 
+/**
+ * Determines whether the up door is open.
+ *
+ * @param maze
+ *     The maze to check.
+ * @param x, y
+ *     The coordinates of the room.
+ * @return non-zero if the door is open
+ */
 #define maze_is_open_up(maze, x, y) \
     (maze_room_get(maze, x, y) & MAZE_WALL_UP)
 
+/**
+ * Determines whether the right door is open.
+ *
+ * @param maze
+ *     The maze to check.
+ * @param x, y
+ *     The coordinates of the room.
+ * @return non-zero if the door is open
+ */
 #define maze_is_open_right(maze, x, y) \
     (maze_room_get(maze, x, y) & MAZE_WALL_RIGHT)
 
+/**
+ * Determines whether the down door is open.
+ *
+ * @param maze
+ *     The maze to check.
+ * @param x, y
+ *     The coordinates of the room.
+ * @return non-zero if the door is open
+ */
 #define maze_is_open_down(maze, x, y) \
     (maze_room_get(maze, x, y) & MAZE_WALL_DOWN)
 
