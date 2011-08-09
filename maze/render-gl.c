@@ -83,19 +83,23 @@ rectangle(
  * @param left
  *     The name of the direction one step clockwise to down.
  */
-#define HANDLE_WALL(down, left) \
+#define HANDLE_WALL(down, left, right) \
     do { \
         int is_open = maze_is_open_##down(maze, x, y); \
         if (!is_open) { \
+            int is_lcorner = !maze_is_open_##left(maze, x, y); \
+            int is_rcorner = !maze_is_open_##right(maze, x, y); \
             rectangle( \
-                0.0, wall_width + slope_width, 0.0, \
-                1.0, 0.0, \
+                is_lcorner ? wall_width + slope_width : 0.0, \
+                    wall_width + slope_width, 0.0, \
+                is_lcorner ? 1.0 - wall_width - slope_width : 1.0, 0.0, \
                 0.0, wall_width, 1.0, \
                 1.0, 1.0, \
                 1.0, wall_width, 1.0, \
                 0.0, 1.0, \
-                1.0, wall_width + slope_width, 0.0, \
-                0.0, 0.0, \
+                is_rcorner ? 1.0 - wall_width - slope_width : 1.0, \
+                    wall_width + slope_width, 0.0, \
+                is_rcorner ? wall_width + slope_width : 0.0, 0.0, \
                 render_texture); \
         } \
         else if (maze_is_corner_##down##_##left##_out(maze, x, y)) { \
@@ -134,16 +138,16 @@ static void
 define_walls(Maze *maze, int x, int y, double wall_width, double slope_width,
     int render_texture)
 {
-    HANDLE_WALL(down, left);
+    HANDLE_WALL(down, left, right);
     NEXT_WALL();
 
-    HANDLE_WALL(left, up);
+    HANDLE_WALL(left, up, down);
     NEXT_WALL();
 
-    HANDLE_WALL(up, right);
+    HANDLE_WALL(up, right, left);
     NEXT_WALL();
 
-    HANDLE_WALL(right, down);
+    HANDLE_WALL(right, down, up);
     NEXT_WALL();
 }
 
