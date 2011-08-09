@@ -135,6 +135,33 @@ maze_door_enter(Maze *maze, int *x, int *y, unsigned char wall,
     int only_if_open);
 
 /**
+ * Moves a point within the maze.
+ *
+ * If the point hits a wall in the horizontal or vertical direction, it will
+ * stop in that direction but continue in the vertical or horizontal direction.
+ *
+ * If the movement occurs outside of the maze, it is not restricted.
+ *
+ * @param maze
+ *     The maze.
+ * @param x, y
+ *     The point to move.
+ * @param dx, dy
+ *     The distance to move in the horizontal and vertical directions. The
+ *     actual movement may be smaller if a wall is hit. The absolute value of
+ *     the distance in any direction must be less than or equal to 1.0.
+ * @param mx, my
+ *     The horizontal and vertical margins. The point will not move closer to a
+ *     wall than this. The margins must be greater than or equal to 0.0, and
+ *     less than 0.5.
+ * @return a bit mask of the walls that were hit, or MAZE_WALL_ANY if a
+ *     parameter is invalid
+ */
+int
+maze_move_point(Maze *maze, double *x, double *y, double dx, double dy,
+    double mx, double my);
+
+/**
  * The function signature of a maze initialisation callback function.
  *
  * @param context

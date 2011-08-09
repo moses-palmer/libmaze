@@ -44,6 +44,9 @@
 		<Unit filename="maze/maze.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="maze/move-point.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="maze/maze.h" />
 		<Unit filename="maze/render-gl.c">
 			<Option compilerVar="CC" />
