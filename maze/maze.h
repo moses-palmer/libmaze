@@ -1,6 +1,8 @@
 #ifndef MAZE_H
 #define MAZE_H
 
+#include <stdlib.h>
+
 /**
  * The bit masks used for the walls.
  */
@@ -167,7 +169,7 @@ struct RandomizedPrimData {
 /**
  * Initialises the maze with the Randomised Prim algorithm.
  *
- * When this function is used, the initialize_data send to the callback will be
+ * When this function is used, the initialize_data sent to the callback will be
  * a RandomizedPrimData* list that contains all walls waiting to be opened.
  *
  * @param maze
@@ -175,7 +177,7 @@ struct RandomizedPrimData {
  * @param callback
  *     The callback function to use. Its return value is used as the data bits
  *     for the room at (x, y). This may be NULL, in which case all data fields
- *     will be 0.
+ *     will be NULL.
  * @param context
  *     The user context passed to the callback function.
  */
@@ -234,7 +236,7 @@ maze_data_get(Maze *maze, int x, int y)
         return maze->data[y * maze->width + x].data;
     }
 
-    return 0;
+    return NULL;
 }
 
 /**
