@@ -394,6 +394,11 @@ maze_data_set(Maze *maze, int x, int y, void *data)
     && !maze_is_open_left(maze, x, y))
 
 /**
+ * @see maze_is_corner_up_left
+ */
+#define maze_is_corner_left_up maze_is_corner_up_left
+
+/**
  * Determines whether the room has a corner in the top right part.
  *
  * @param maze
@@ -405,6 +410,11 @@ maze_data_set(Maze *maze, int x, int y, void *data)
 #define maze_is_corner_up_right(maze, x, y) (1 \
     && !maze_is_open_up(maze, x, y) \
     && !maze_is_open_right(maze, x, y))
+
+/**
+ * @see maze_is_corner_up_right
+ */
+#define maze_is_corner_right_up maze_is_corner_up_right
 
 /**
  * Determines whether the room has a corner in the bottom left part.
@@ -420,6 +430,11 @@ maze_data_set(Maze *maze, int x, int y, void *data)
     && !maze_is_open_left(maze, x, y))
 
 /**
+ * @see maze_is_corner_down_left
+ */
+#define maze_is_corner_left_down maze_is_corner_down_left
+
+/**
  * Determines whether the room has a corner in the bottom right part.
  *
  * @param maze
@@ -431,6 +446,11 @@ maze_data_set(Maze *maze, int x, int y, void *data)
 #define maze_is_corner_down_right(maze, x, y) (1 \
     && !maze_is_open_down(maze, x, y) \
     && !maze_is_open_right(maze, x, y))
+
+/**
+ * @see maze_is_corner_down_right
+ */
+#define maze_is_corner_right_down maze_is_corner_down_right
 
 /**
  * Determines whether the room has a protruding corner in the top left part.
@@ -449,6 +469,11 @@ maze_data_set(Maze *maze, int x, int y, void *data)
         || !maze_is_open_left(maze, x, y - 1)))
 
 /**
+ * @see maze_is_corner_up_left_out
+ */
+#define maze_is_corner_left_up_out maze_is_corner_up_left_out
+
+/**
  * Determines whether the room has a protruding corner in the top right part.
  *
  * @param maze
@@ -463,6 +488,11 @@ maze_data_set(Maze *maze, int x, int y, void *data)
     && (0 \
         || !maze_is_open_up(maze, x + 1, y) \
         || !maze_is_open_right(maze, x, y - 1)))
+
+/**
+ * @see maze_is_corner_up_right_out
+ */
+#define maze_is_corner_right_up_out maze_is_corner_up_right_out
 
 /**
  * Determines whether the room has a protruding corner in the bottom left part.
@@ -481,6 +511,11 @@ maze_data_set(Maze *maze, int x, int y, void *data)
         || !maze_is_open_left(maze, x, y + 1)))
 
 /**
+ * @see maze_is_corner_down_left_out
+ */
+#define maze_is_corner_left_down_out maze_is_corner_down_left_out
+
+/**
  * Determines whether the room has a protruding corner in the bottom right part.
  *
  * @param maze
@@ -495,5 +530,10 @@ maze_data_set(Maze *maze, int x, int y, void *data)
     && (0 \
         || !maze_is_open_down(maze, x + 1, y) \
         || !maze_is_open_right(maze, x, y + 1)))
+
+/**
+ * @see maze_is_corner_down_right_out
+ */
+#define maze_is_corner_right_down_out maze_is_corner_down_right_out
 
 #endif
