@@ -82,10 +82,8 @@ rectangle(
  *     The name of the direction that should be rendered as the bottom wall.
  * @param left
  *     The name of the direction one step clockwise to down.
- * @param is_edge
- *     Whether there is an outer edge of the maze in the direction down.
  */
-#define HANDLE_WALL(down, left, is_edge) \
+#define HANDLE_WALL(down, left) \
     do { \
         int is_open = maze_is_open_##down(maze, x, y); \
         if (!is_open) { \
@@ -122,42 +120,6 @@ rectangle(
                 wall_width + slope_width, 0.0, \
                 render_texture); \
         } \
-        if (is_edge) { \
-            if (is_open) { \
-                rectangle( \
-                    0.0, 0.0, 1.0, \
-                    0.0, 1.0, \
-                    0.0, 0.0, 0.0, \
-                    0.0, 0.0, \
-                    wall_width + slope_width, 0.0, 0.0, \
-                    wall_width + slope_width, 0.0, \
-                    wall_width, 0.0, 1.0, \
-                    wall_width, 1.0, \
-                    render_texture); \
-                rectangle( \
-                    1.0 - wall_width, 0.0, 1.0, \
-                    1.0 - wall_width, 1.0, \
-                    1.0 - wall_width - slope_width, 0.0, 0.0, \
-                    1.0 - wall_width - slope_width, 0.0, \
-                    1.0, 0.0, 0.0, \
-                    1.0, 0.0, \
-                    1.0, 0.0, 1.0, \
-                    1.0, 1.0, \
-                    render_texture); \
-            } \
-            else { \
-                rectangle( \
-                    0.0, 0.0, 1.0, \
-                    0.0, 1.0, \
-                    0.0, 0.0, 0.0, \
-                    0.0, 0.0, \
-                    1.0, 0.0, 0.0, \
-                    1.0, 0.0, \
-                    1.0, 0.0, 1.0, \
-                    1.0, 1.0, \
-                    render_texture); \
-            } \
-        } \
     } while (0)
 
 /**
@@ -172,16 +134,16 @@ static void
 define_walls(Maze *maze, int x, int y, double wall_width, double slope_width,
     int render_texture)
 {
-    HANDLE_WALL(down, left, y == maze->height - 1);
+    HANDLE_WALL(down, left);
     NEXT_WALL();
 
-    HANDLE_WALL(left, up, x == 0);
+    HANDLE_WALL(left, up);
     NEXT_WALL();
 
-    HANDLE_WALL(up, right, y == 0);
+    HANDLE_WALL(up, right);
     NEXT_WALL();
 
-    HANDLE_WALL(right, down, x == maze->width - 1);
+    HANDLE_WALL(right, down);
     NEXT_WALL();
 }
 
@@ -278,10 +240,8 @@ define_floor(Maze *maze, int x, int y, double floor_width, int render_texture)
  *     The name of the direction that should be rendered as the bottom wall.
  * @param left
  *     The name of the direction one step clockwise to down.
- * @param is_edge
- *     Whether there is an outer edge of the maze in the direction down.
  */
-#define HANDLE_TOP(down, left, is_edge) \
+#define HANDLE_TOP(down, left) \
     do { \
         int is_open = maze_is_open_##down(maze, x, y); \
         if (!is_open) { \
@@ -322,16 +282,16 @@ static void
 define_top(Maze *maze, int x, int y, double wall_width, double slope_width,
     int render_texture)
 {
-    HANDLE_TOP(down, left, y == maze->height - 1);
+    HANDLE_TOP(down, left);
     NEXT_TOP();
 
-    HANDLE_TOP(left, up, x == 0);
+    HANDLE_TOP(left, up);
     NEXT_TOP();
 
-    HANDLE_TOP(up, right, y == 0);
+    HANDLE_TOP(up, right);
     NEXT_TOP();
 
-    HANDLE_TOP(right, down, x == maze->width - 1);
+    HANDLE_TOP(right, down);
     NEXT_TOP();
 }
 
@@ -350,15 +310,7 @@ maze_render_gl(Maze *maze, double wall_width, double slope_width,
 
     /* Draw every requested room */
     for (y = cy - (int)d; y <= cy + (int)d; y++) {
-        if (y < 0 || y >= maze->height) {
-            continue;
-        }
-
         for (x = cx - (int)d; x <= cx + (int)d; x++) {
-            if (x < 0 || x >= maze->width) {
-                continue;
-            }
-
             glPushMatrix();
             glTranslatef(x, (int)maze->height - 1 - y, 0.0);
             if (flags & MAZE_RENDER_GL_WALLS) {
