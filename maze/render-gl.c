@@ -179,7 +179,7 @@ define_floor(Maze *maze, int x, int y, double floor_width, int render_texture)
         render_texture);
 
     /* Is there a left edge? */
-    if (x == 0) {
+    if (x == -1) {
         rectangle(
             0.0, 1.0, 0.0,
             1.0, 1.0,
@@ -193,7 +193,7 @@ define_floor(Maze *maze, int x, int y, double floor_width, int render_texture)
     }
 
     /* Is there an up edge? */
-    if (y == 0) {
+    if (y == -1) {
         rectangle(
             0.0, 1.0, 0.0,
             0.0, 0.0,
@@ -207,7 +207,7 @@ define_floor(Maze *maze, int x, int y, double floor_width, int render_texture)
     }
 
     /* Is there a right edge? */
-    if (x == maze->width - 1) {
+    if (x == maze->width) {
         rectangle(
             1.0, 1.0, 0.0,
             0.0, 1.0,
@@ -221,7 +221,7 @@ define_floor(Maze *maze, int x, int y, double floor_width, int render_texture)
     }
 
     /* Is there a down edge? */
-    if (y == maze->height - 1) {
+    if (y == maze->height) {
         rectangle(
             0.0, 0.0, 0.0,
             0.0, 1.0,
@@ -321,7 +321,8 @@ maze_render_gl(Maze *maze, double wall_width, double slope_width,
                 define_walls(maze, x, y, wall_width, slope_width,
                     flags & MAZE_RENDER_GL_TEXTURE);
             }
-            if (flags & MAZE_RENDER_GL_FLOOR) {
+            if (flags & MAZE_RENDER_GL_FLOOR
+                    && maze_edge_contains(maze, x, y)) {
                 define_floor(maze, x, y, floor_thickness,
                     flags & MAZE_RENDER_GL_TEXTURE);
             }

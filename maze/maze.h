@@ -229,6 +229,24 @@ maze_contains(Maze *maze, int x, int y)
 }
 
 /**
+ * Determines whether a maze contains a room.
+ *
+ * The edge of the maze is used as well.
+ *
+ * @param maze
+ *     The maze on which to operate.
+ * @param x, y
+ *     The coordinates of the room.
+ * @return non-zero if the room is inside the maze and 0 otherwise
+ */
+static inline int
+maze_edge_contains(Maze *maze, int x, int y)
+{
+    return x >= -1 && x <= (int)maze->width
+        && y >= -1 && y <= (int)maze->height;
+}
+
+/**
  * Retrieves the wall value of a room.
  *
  * @param maze
