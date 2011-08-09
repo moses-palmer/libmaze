@@ -73,9 +73,21 @@ rectangle(
     glEnd();
 }
 
-#define HANDLE_WALL(corner, wall, is_edge) \
+/**
+ * Defines the vertices of a wall.
+ *
+ * It is added to the bottom of the current view.
+ *
+ * @param down
+ *     The name of the direction that should be rendered as the bottom wall.
+ * @param left
+ *     The name of the direction one step clockwise to down.
+ * @param is_edge
+ *     Whether there is an outer edge of the maze in the direction down.
+ */
+#define HANDLE_WALL(down, left, is_edge) \
     do { \
-        int is_open = maze_is_open_##wall(maze, x, y); \
+        int is_open = maze_is_open_##down(maze, x, y); \
         if (!is_open) { \
             rectangle( \
                 0.0, wall_width + slope_width, 0.0, \
@@ -88,7 +100,7 @@ rectangle(
                 0.0, 0.0, \
                 render_texture); \
         } \
-        else if (maze_is_corner_##corner##_out(maze, x, y)) { \
+        else if (maze_is_corner_##down##_##left##_out(maze, x, y)) { \
             rectangle( \
                 0.0, wall_width + slope_width, 0.0, \
                 1.0, 0.0, \
@@ -148,6 +160,9 @@ rectangle(
         } \
     } while (0)
 
+/**
+ * Translates the matrix so that we may handle the next wall clockwise.
+ */
 #define NEXT_WALL() \
     glTranslatef(0.5, 0.5, 0.0); \
     glRotatef(90.0, 0.0, 0.0, -1.0); \
@@ -157,16 +172,16 @@ static void
 define_walls(Maze *maze, unsigned int x, unsigned int y, double wall_width,
     double slope_width, int render_texture)
 {
-    HANDLE_WALL(down_left, down, y == maze->height - 1);
+    HANDLE_WALL(down, left, y == maze->height - 1);
     NEXT_WALL();
 
-    HANDLE_WALL(up_left, left, x == 0);
+    HANDLE_WALL(left, up, x == 0);
     NEXT_WALL();
 
-    HANDLE_WALL(up_right, up, y == 0);
+    HANDLE_WALL(up, right, y == 0);
     NEXT_WALL();
 
-    HANDLE_WALL(down_right, right, x == maze->width - 1);
+    HANDLE_WALL(right, down, x == maze->width - 1);
     NEXT_WALL();
 }
 
@@ -255,9 +270,21 @@ define_floor(Maze *maze, unsigned int x, unsigned int y, double floor_width,
     }
 }
 
-#define HANDLE_TOP(corner, wall, is_edge) \
+/**
+ * Defines the vertices of the top of a wall.
+ *
+ * It is added to the bottom of the current view.
+ *
+ * @param down
+ *     The name of the direction that should be rendered as the bottom wall.
+ * @param left
+ *     The name of the direction one step clockwise to down.
+ * @param is_edge
+ *     Whether there is an outer edge of the maze in the direction down.
+ */
+#define HANDLE_TOP(down, left, is_edge) \
     do { \
-        int is_open = maze_is_open_##wall(maze, x, y); \
+        int is_open = maze_is_open_##down(maze, x, y); \
         if (!is_open) { \
             rectangle( \
                 0.0, wall_width, 1.0, \
@@ -270,7 +297,7 @@ define_floor(Maze *maze, unsigned int x, unsigned int y, double floor_width,
                 1.0, 1.0, \
                 render_texture); \
         } \
-        else if (maze_is_corner_##corner##_out(maze, x, y)) { \
+        else if (maze_is_corner_##down##_##left##_out(maze, x, y)) { \
             rectangle( \
                 0.0, wall_width, 1.0, \
                 0.0, 1.0, \
@@ -284,6 +311,9 @@ define_floor(Maze *maze, unsigned int x, unsigned int y, double floor_width,
         } \
     } while (0)
 
+/**
+ * Translates the matrix so that we may handle the next wall clockwise.
+ */
 #define NEXT_TOP() \
     glTranslatef(0.5, 0.5, 0.0); \
     glRotatef(90.0, 0.0, 0.0, -1.0); \
@@ -293,16 +323,16 @@ static void
 define_top(Maze *maze, unsigned int x, unsigned int y, double wall_width,
     double slope_width, int render_texture)
 {
-    HANDLE_TOP(down_left, down, y == maze->height - 1);
+    HANDLE_TOP(down, left, y == maze->height - 1);
     NEXT_TOP();
 
-    HANDLE_TOP(up_left, left, x == 0);
+    HANDLE_TOP(left, up, x == 0);
     NEXT_TOP();
 
-    HANDLE_TOP(up_right, up, y == 0);
+    HANDLE_TOP(up, right, y == 0);
     NEXT_TOP();
 
-    HANDLE_TOP(down_right, right, x == maze->width - 1);
+    HANDLE_TOP(right, down, x == maze->width - 1);
     NEXT_TOP();
 }
 
