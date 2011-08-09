@@ -216,8 +216,36 @@ maze_room_get(Maze *maze, int x, int y)
     if (maze_contains(maze, x, y)) {
         return maze->data[y * maze->width + x].walls;
     }
+    else if (x == -1 && maze_contains(maze, 0, y)) {
+        return MAZE_WALL_ANY
+            & ~(maze->data[y * maze->width + 0].walls
+                    & MAZE_WALL_LEFT
+                ? 0
+                : MAZE_WALL_RIGHT);
+    }
+    else if (x == maze->width && maze_contains(maze, maze->width - 1, y)) {
+        return MAZE_WALL_ANY
+            & ~(maze->data[y * maze->width + maze->width - 1].walls
+                    & MAZE_WALL_RIGHT
+                ? 0
+                : MAZE_WALL_LEFT);
+    }
+    else if (y == -1 && maze_contains(maze, x, 0)) {
+        return MAZE_WALL_ANY
+            & ~(maze->data[0 * maze->width + x].walls
+                    & MAZE_WALL_UP
+                ? 0
+                : MAZE_WALL_DOWN);
+    }
+    else if (y == maze->height && maze_contains(maze, x, maze->height - 1)) {
+        return MAZE_WALL_ANY
+            & ~(maze->data[(maze->height - 1) * maze->width + x].walls
+                    & MAZE_WALL_DOWN
+                ? 0
+                : MAZE_WALL_UP);
+    }
 
-    return 0;
+    return MAZE_WALL_ANY;
 }
 
 /**
@@ -264,6 +292,10 @@ maze_data_set(Maze *maze, int x, int y, void *data)
 /**
  * Determines whether the left door is open.
  *
+ * If the point is on the edge of the maze, this macro will determine whether
+ * there is an entrance to the maze. If the point is completely outside of the
+ * maze, this macro will always be 0.
+ *
  * @param maze
  *     The maze to check.
  * @param x, y
@@ -275,6 +307,10 @@ maze_data_set(Maze *maze, int x, int y, void *data)
 
 /**
  * Determines whether the up door is open.
+ *
+ * If the point is on the edge of the maze, this macro will determine whether
+ * there is an entrance to the maze. If the point is completely outside of the
+ * maze, this macro will always be 0.
  *
  * @param maze
  *     The maze to check.
@@ -288,6 +324,10 @@ maze_data_set(Maze *maze, int x, int y, void *data)
 /**
  * Determines whether the right door is open.
  *
+ * If the point is on the edge of the maze, this macro will determine whether
+ * there is an entrance to the maze. If the point is completely outside of the
+ * maze, this macro will always be 0.
+ *
  * @param maze
  *     The maze to check.
  * @param x, y
@@ -299,6 +339,10 @@ maze_data_set(Maze *maze, int x, int y, void *data)
 
 /**
  * Determines whether the down door is open.
+ *
+ * If the point is on the edge of the maze, this macro will determine whether
+ * there is an entrance to the maze. If the point is completely outside of the
+ * maze, this macro will always be 0.
  *
  * @param maze
  *     The maze to check.
