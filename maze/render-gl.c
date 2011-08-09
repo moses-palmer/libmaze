@@ -235,68 +235,124 @@ define_floor(Maze *maze, int x, int y, double floor_width, int render_texture)
     }
 }
 
-/**
- * Defines the vertices of the top of a wall.
- *
- * It is added to the bottom of the current view.
- *
- * @param down
- *     The name of the direction that should be rendered as the bottom wall.
- * @param left
- *     The name of the direction one step clockwise to down.
- */
-#define HANDLE_TOP(down, left) \
-    do { \
-        int is_open = maze_is_open_##down(maze, x, y); \
-        if (!is_open) { \
-            rectangle( \
-                0.0, wall_width, 1.0, \
-                0.0, 1.0, \
-                0.0, 0.0, 1.0, \
-                0.0, 0.0, \
-                1.0, 0.0, 1.0, \
-                1.0, 0.0, \
-                1.0, wall_width, 1.0, \
-                1.0, 1.0, \
-                render_texture); \
-        } \
-        else if (maze_is_corner_##down##_##left##_out(maze, x, y)) { \
-            rectangle( \
-                0.0, wall_width, 1.0, \
-                0.0, 1.0, \
-                0.0, 0.0, 1.0, \
-                0.0, 0.0, \
-                wall_width, 0.0, 1.0, \
-                wall_width, 0.0, \
-                wall_width, wall_width, 1.0, \
-                wall_width, 1.0, \
-                render_texture); \
-        } \
-    } while (0)
-
-/**
- * Translates the matrix so that we may handle the next wall clockwise.
- */
-#define NEXT_TOP() \
-    glTranslatef(0.5, 0.5, 0.0); \
-    glRotatef(90.0, 0.0, 0.0, -1.0); \
-    glTranslatef(-0.5, -0.5, 0.0)
-
 static void
 define_top(Maze *maze, int x, int y, double wall_width, double slope_width,
     int render_texture)
 {
-    HANDLE_TOP(down, left);
-    NEXT_TOP();
+    double ty = maze_is_open_up(maze, x, y) ? 1.0 : 1.0 - wall_width;
+    double by = maze_is_open_down(maze, x, y) ? 0.0 : wall_width;
 
-    HANDLE_TOP(left, up);
-    NEXT_TOP();
+    /* The top */
+    if (!maze_is_open_up(maze, x, y)) {
+        rectangle(
+            0.0, 1.0, 1.0,
+            0.0, 1.0,
+            0.0, 1.0 - wall_width, 1.0,
+            0.0, 1.0 - wall_width,
+            1.0, 1.0 - wall_width, 1.0,
+            1.0, 1.0 - wall_width,
+            1.0, 1.0, 1.0,
+            1.0, 1.0,
+            render_texture);
+    }
 
-    HANDLE_TOP(up, right);
-    NEXT_TOP();
+    /* The bottom */
+    if (!maze_is_open_down(maze, x, y)) {
+        rectangle(
+            0.0, wall_width, 1.0,
+            0.0, wall_width,
+            0.0, 0.0, 1.0,
+            0.0, 0.0,
+            1.0, 0.0, 1.0,
+            1.0, 0.0,
+            1.0, wall_width, 1.0,
+            1.0, wall_width,
+            render_texture);
+    }
 
-    HANDLE_TOP(right, down);
-    NEXT_TOP();
+    /* The left */
+    if (!maze_is_open_left(maze, x, y)) {
+        rectangle(
+            0.0, ty, 1.0,
+            0.0, ty,
+            0.0, by, 1.0,
+            0.0, by,
+            wall_width, by, 1.0,
+            wall_width, by,
+            wall_width, ty, 1.0,
+            wall_width, ty,
+            render_texture);
+    }
+
+    /* The right */
+    if (!maze_is_open_right(maze, x, y)) {
+        rectangle(
+            1.0 - wall_width, ty, 1.0,
+            1.0 - wall_width, ty,
+            1.0 - wall_width, by, 1.0,
+            1.0 - wall_width, by,
+            1.0, by, 1.0,
+            1.0, by,
+            1.0, ty, 1.0,
+            1.0, ty,
+            render_texture);
+    }
+
+    /* The top left */
+    if (maze_is_corner_up_left_out(maze, x, y)) {
+        rectangle(
+            0.0, 1.0, 1.0,
+            0.0, 1.0,
+            0.0, 1.0 - wall_width, 1.0,
+            0.0, 1.0 - wall_width,
+            wall_width, 1.0 - wall_width, 1.0,
+            wall_width, 1.0 - wall_width,
+            wall_width, 1.0, 1.0,
+            wall_width, 1.0,
+            render_texture);
+    }
+
+    /* The top right */
+    if (maze_is_corner_up_right_out(maze, x, y)) {
+        rectangle(
+            1.0 - wall_width, 1.0, 1.0,
+            1.0 - wall_width, 1.0,
+            1.0 - wall_width, 1.0 - wall_width, 1.0,
+            1.0 - wall_width, 1.0 - wall_width,
+            1.0, 1.0 - wall_width, 1.0,
+            1.0, 1.0 - wall_width,
+            1.0, 1.0, 1.0,
+            1.0, 1.0,
+            render_texture);
+    }
+
+    /* The bottom left */
+    if (maze_is_corner_down_left_out(maze, x, y)) {
+        rectangle(
+            0.0, wall_width, 1.0,
+            0.0, wall_width,
+            0.0, 0.0, 1.0,
+            0.0, 0.0,
+            wall_width, 0.0, 1.0,
+            wall_width, 0.0,
+            wall_width, wall_width, 1.0,
+            wall_width, wall_width,
+            render_texture);
+    }
+
+    /* The bottom right */
+    if (maze_is_corner_down_right_out(maze, x, y)) {
+        rectangle(
+            1.0 - wall_width, wall_width, 1.0,
+            1.0 - wall_width, wall_width,
+            1.0 - wall_width, 0.0, 1.0,
+            1.0 - wall_width, 0.0,
+            1.0, 0.0, 1.0,
+            1.0, 0.0,
+            1.0, wall_width, 1.0,
+            1.0, wall_width,
+            render_texture);
+    }
 }
 
 int
