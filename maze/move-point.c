@@ -16,11 +16,8 @@ maze_move_point(Maze *maze, double *x, double *y, double dx, double dy,
 
     /* Retrieve the old room location and the position within the room */
     int ox, oy;
-    double ofx, ofy;
     ox = (int)floor(*x);
     oy = (int)floor(*y);
-    ofx = *x - ox;
-    ofy = *y - oy;
 
     /* Calculate the new coordinates */
     *x += dx;
